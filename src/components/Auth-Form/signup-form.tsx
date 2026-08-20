@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -8,13 +10,51 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { useForm } from "react-hook-form";
+import { signUp } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { SignupFormData } from "../../../types/SignupFormData";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+
+  const { register, handleSubmit,
+    formState: { errors }, } = useForm<SignupFormData>();
+
+  const router = useRouter();
+
+  const handleSignUp = async (data: SignupFormData) => {
+
+    if (data.password !== data.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    const res = await signUp.email({
+      name: data.fullName,
+      email: data.email,
+      password: data.password,
+      userName: data.userName
+    });
+
+    if (res.error) {
+      console.log(res.error);
+      alert(res.error.message);
+      return;
+    }
+
+    console.log("Account created successfully!");
+    console.log(res.data);
+    router.push("/");
+  }
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      onSubmit={handleSubmit(handleSignUp)}
+
+      className={cn("flex flex-col gap-6", className)} {...props}>
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Create your account</h1>
@@ -25,8 +65,8 @@ export function SignupForm({
         <Field>
           <FieldLabel htmlFor="name">Full Name</FieldLabel>
           <Input
+            {...register('fullName')}
             id="name"
-            name="name"
             type="text"
             placeholder="John Doe"
             required
@@ -36,8 +76,8 @@ export function SignupForm({
         <Field>
           <FieldLabel htmlFor="name">Username</FieldLabel>
           <Input
+            {...register('userName')}
             id="username"
-            name="username"
             type="text"
             placeholder="John145"
             required
@@ -47,8 +87,8 @@ export function SignupForm({
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
+            {...register('email')}
             id="email"
-            name="email"
             type="email"
             placeholder="m@example.com"
             required
@@ -62,8 +102,8 @@ export function SignupForm({
         <Field>
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <Input
+            {...register('password')}
             id="password"
-            name="password"
             type="password"
             required
             className="bg-background"
@@ -75,8 +115,8 @@ export function SignupForm({
         <Field>
           <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
           <Input
+            {...register('confirmPassword')}
             id="confirm-password"
-            name="confirm-password"
             type="password"
             required
             className="bg-background"
