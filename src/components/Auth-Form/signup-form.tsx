@@ -24,7 +24,6 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
   const { register, handleSubmit, control, } = useForm<SignupFormData>();
 
   const baseUrl = process.env.NEXT_PUBLIC_URI
-  const router = useRouter();
 
   const userName = useWatch({
     control,
@@ -70,7 +69,8 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
       name: data.fullName,
       email: data.email,
       password: data.password,
-      userName: data.userName
+      userName: data.userName,
+      callbackURL: "/email-verified",
     });
 
     if (res.error) {
@@ -78,8 +78,6 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
       alert(res.error.message);
       return;
     }
-
-    router.push("/");
   }
 
   return (

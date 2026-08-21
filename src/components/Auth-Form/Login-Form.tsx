@@ -1,5 +1,3 @@
-'use client';
-
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,84 +8,39 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form";
-import { signIn } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
-import { SignupFormData } from "../../../types/SignupFormData";
-import Link from "next/link";
+import Link from "next/link"
 
-export function LoginForm({
+export default function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-
-  const { register, handleSubmit,
-    formState: { errors }, } = useForm<SignupFormData>();
-
-  const router = useRouter();
-
-  const handleSignIn = async (data: SignupFormData) => {
-
-    const res = await signIn.email({
-      email: data.email,
-      password: data.password,
-    });
-
-    if (res.error) {
-      console.log(res.error);
-      alert(res.error.message);
-      return;
-    }
-
-    console.log("Login successful");
-    console.log(res.data);
-    router.push("/");
-  }
-
   return (
-    <form
-      onSubmit={handleSubmit(handleSignIn)}
-
-      className={cn("flex flex-col gap-6", className)} {...props}>
+    <form className={cn("flex flex-col gap-6", className)} {...props}>
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Create your account</h1>
+          <h1 className="text-2xl font-bold">Login to your account</h1>
           <p className="text-sm text-balance text-muted-foreground">
-            Fill in the form below to Login your account
+            Enter your email below to login to your account
           </p>
         </div>
-        
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input
-            {...register('email')}
-            id="email"
-            type="email"
-            placeholder="m@example.com"
-            required
-            className="bg-background"
-          />
-          <FieldDescription>
-            We&apos;ll use this to contact you. We will not share your email
-            with anyone else.
-          </FieldDescription>
+          <Input id="email" type="email" placeholder="m@example.com" required />
         </Field>
         <Field>
-          <FieldLabel htmlFor="password">Password</FieldLabel>
-          <Input
-            {...register('password')}
-            id="password"
-            type="password"
-            required
-            className="bg-background"
-          />
-          <FieldDescription>
-            Must be at least 8 characters long.
-          </FieldDescription>
+          <div className="flex items-center">
+            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <a
+              href="#"
+              className="ml-auto text-sm underline-offset-4 hover:underline"
+            >
+              Forgot your password?
+            </a>
+          </div>
+          <Input id="password" type="password" required />
         </Field>
-       
         <Field>
-          <Button type="submit">Login Account</Button>
+          <Button type="submit">Login</Button>
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
@@ -98,10 +51,14 @@ export function LoginForm({
                 fill="currentColor"
               />
             </svg>
-            Sign In with GitHub
+            Login with GitHub
           </Button>
-          <FieldDescription className="px-6 text-center">
-            Don't have an account? <Link href="/auth/signup">Sign Up</Link>
+          <FieldDescription className="text-center">
+            Don&apos;t have an account?{" "}
+            <Link href="/auth/signup
+            " className="underline underline-offset-4">
+              Sign up
+            </Link>
           </FieldDescription>
         </Field>
       </FieldGroup>
