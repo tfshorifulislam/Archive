@@ -14,7 +14,7 @@ export async function proxy(request: NextRequest) {
 
     if (!response.ok) {
         return NextResponse.redirect(
-            new URL("/auth/signin", request.url)
+            new URL("/auth/login", request.url)
         );
     }
 
@@ -26,5 +26,6 @@ export const config = {
         "/dashboard/:path*",
         "/profile/:path*",
         "/settings/:path*",
+        '/profile'
     ],
 };
