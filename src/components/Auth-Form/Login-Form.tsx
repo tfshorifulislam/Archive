@@ -11,62 +11,26 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form";
-import { signUp } from "@/lib/auth-client";
+import { signIn } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { SignupFormData } from "../../../types/SignupFormData";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
-export function SignupForm({ className, ...props }: React.ComponentProps<"form">) {
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentProps<"form">) {
 
-  const [userNameMessage, setUserNameMessage] = useState('');
-  const [userNameAvailable, setUserNameAvailable] = useState<boolean | null>(null);
-  const { register, handleSubmit, watch, formState: { errors }, } = useForm<SignupFormData>();
-  
-  const baseUrl = process.env.NEXT_PUBLIC_URI
+  const { register, handleSubmit,
+    formState: { errors }, } = useForm<SignupFormData>();
+
   const router = useRouter();
-  const userName = watch("userName");
 
+  const handleSignIn = async (data: SignupFormData) => {
 
-  useEffect(() => {
-    if (!userName || userName.length < 3) {
-      setUserNameMessage('');
-      setUserNameAvailable(null);
-      return;
-    }
-
-    const checkUserName = async () => {
-      try {
-        const res = await fetch(`${baseUrl}/api/user/check-ussername?userName=${encodeURIComponent(userName)}`);
-
-        const data = await res.json();
-
-        setUserNameMessage(data.message);
-        setUserNameAvailable(data.available);
-
-      } catch (error) {
-        console.error(error);
-        setUserNameMessage("Unable to check username");
-        setUserNameAvailable(false);
-      }
-    }
-
-    checkUserName();
-  }, [userName])
-
-
-  const handleSignUp = async (data: SignupFormData) => {
-
-    if (data.password !== data.confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
-
-    const res = await signUp.email({
-      name: data.fullName,
+    const res = await signIn.email({
       email: data.email,
       password: data.password,
-      userName: data.userName
     });
 
     if (res.error) {
@@ -75,53 +39,24 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
       return;
     }
 
+    console.log("Login successful");
+    console.log(res.data);
     router.push("/");
   }
 
   return (
     <form
-      onSubmit={handleSubmit(handleSignUp)}
+      onSubmit={handleSubmit(handleSignIn)}
 
       className={cn("flex flex-col gap-6", className)} {...props}>
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Create your account</h1>
           <p className="text-sm text-balance text-muted-foreground">
-            Fill in the form below to create your account
+            Fill in the form below to Login your account
           </p>
         </div>
-        <Field>
-          <FieldLabel htmlFor="name">Full Name</FieldLabel>
-          <Input
-            {...register('fullName')}
-            id="name"
-            type="text"
-            placeholder="John Doe"
-            required
-            className="bg-background"
-          />
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="name">Username</FieldLabel>
-          <Input
-            {...register('userName')}
-            id="username"
-            type="text"
-            placeholder="John145"
-            required
-            className="bg-background"
-          />
-          {userNameMessage && (
-            <p
-              className={`text-sm ${userNameAvailable
-                ? "text-green-600"
-                : "text-red-600"
-                }`}
-            >
-              {userNameMessage}
-            </p>
-          )}
-        </Field>
+        
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
@@ -150,19 +85,9 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
             Must be at least 8 characters long.
           </FieldDescription>
         </Field>
+       
         <Field>
-          <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
-          <Input
-            {...register('confirmPassword')}
-            id="confirm-password"
-            type="password"
-            required
-            className="bg-background"
-          />
-          <FieldDescription>Please confirm your password.</FieldDescription>
-        </Field>
-        <Field>
-          <Button type="submit">Create Account</Button>
+          <Button type="submit">Login Account</Button>
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
@@ -173,10 +98,10 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
                 fill="currentColor"
               />
             </svg>
-            Sign up with GitHub
+            Sign In with GitHub
           </Button>
           <FieldDescription className="px-6 text-center">
-            Already have an account? <Link href="/auth/signin">Sign in</Link>
+            Don't have an account? <Link href="/auth/signup">Sign Up</Link>
           </FieldDescription>
         </Field>
       </FieldGroup>
