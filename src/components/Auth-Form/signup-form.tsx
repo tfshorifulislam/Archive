@@ -16,6 +16,7 @@ import { SignupFormData } from "../../../types/SignupFormData";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function SignupForm({ className, ...props }: React.ComponentProps<"form">) {
 
@@ -39,6 +40,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
 
     const timer = setTimeout(async () => {
       try {
+
         const res = await fetch(
           `${baseUrl}/api/user/check-ussername?userName=${encodeURIComponent(userName)}`
         );
@@ -47,6 +49,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
 
         setUserNameMessage(data.message);
         setUserNameAvailable(data.available);
+
       } catch (error) {
         console.error(error);
         setUserNameMessage("Unable to check username");
@@ -62,7 +65,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
   const handleSignUp = async (data: SignupFormData) => {
 
     if (data.password !== data.confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -76,7 +79,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
 
     if (res.error) {
       console.log(res.error);
-      alert(res.error.message);
+      toast.error(res.error.message);
       return;
     }
 

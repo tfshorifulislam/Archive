@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,19 +11,49 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
+import { SignupFormData } from "../../../types/SignupFormData"
+import { signIn } from "@/lib/auth-client"
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
 
+  const router = useRouter()
 
-  const handleLogin = async () => {
-    
+  const { register, handleSubmit, } = useForm<SignupFormData>();
+
+  const handleLogin = async (data: SignupFormData) => {
+
+    try {
+      const res = await signIn.email({
+        email: data.email,
+        password: data.password,
+      });
+
+      // console.log("LOGIN RESPONSE:", res);
+
+      if (res.error) {
+        toast.error(res.error.message || "Login failed");
+        return;
+      }
+
+      toast.success("Login successful!");
+      router.push('/')
+    } catch (error) {
+      console.error("LOGIN ERROR:", error);
+      toast.error("Something went wrong. Please try again.");
+    }
   }
 
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      onSubmit={handleSubmit(handleLogin)}
+
+      className={cn("flex flex-col gap-6", className)} {...props}>
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Login to your account</h1>
@@ -29,9 +61,10 @@ export default function LoginForm({
             Enter your email below to login to your account
           </p>
         </div>
+
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Input    {...register('email')} id="email" type="email" placeholder="m@example.com" required />
         </Field>
         <Field>
           <div className="flex items-center">
@@ -43,7 +76,7 @@ export default function LoginForm({
               Forgot your password?
             </Link>
           </div>
-          <Input id="password" type="password" required />
+          <Input {...register('password')} id="password" type="password" required />
         </Field>
         <Field>
           <Button type="submit">Login</Button>
