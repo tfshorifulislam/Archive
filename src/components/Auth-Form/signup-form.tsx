@@ -61,7 +61,6 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
   }, [userName, baseUrl]);
 
 
-
   const handleSignUp = async (data: SignupFormData) => {
 
     if (data.password !== data.confirmPassword) {
