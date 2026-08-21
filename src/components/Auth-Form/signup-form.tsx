@@ -10,7 +10,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { signUp } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { SignupFormData } from "../../../types/SignupFormData";
@@ -21,38 +21,42 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
 
   const [userNameMessage, setUserNameMessage] = useState('');
   const [userNameAvailable, setUserNameAvailable] = useState<boolean | null>(null);
-  const { register, handleSubmit, watch, formState: { errors }, } = useForm<SignupFormData>();
-  
+  const { register, handleSubmit, control, } = useForm<SignupFormData>();
+
   const baseUrl = process.env.NEXT_PUBLIC_URI
   const router = useRouter();
-  const userName = watch("userName");
+
+  const userName = useWatch({
+    control,
+    name: "userName",
+  });
 
 
   useEffect(() => {
     if (!userName || userName.length < 3) {
-      setUserNameMessage('');
-      setUserNameAvailable(null);
       return;
     }
 
-    const checkUserName = async () => {
+    const timer = setTimeout(async () => {
       try {
-        const res = await fetch(`${baseUrl}/api/user/check-ussername?userName=${encodeURIComponent(userName)}`);
+        const res = await fetch(
+          `${baseUrl}/api/user/check-ussername?userName=${encodeURIComponent(userName)}`
+        );
 
         const data = await res.json();
 
         setUserNameMessage(data.message);
         setUserNameAvailable(data.available);
-
       } catch (error) {
         console.error(error);
         setUserNameMessage("Unable to check username");
         setUserNameAvailable(false);
       }
-    }
+    }, 500);
 
-    checkUserName();
-  }, [userName])
+    return () => clearTimeout(timer);
+  }, [userName, baseUrl]);
+
 
 
   const handleSignUp = async (data: SignupFormData) => {
