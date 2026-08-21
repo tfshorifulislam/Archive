@@ -24,7 +24,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
   const [userNameAvailable, setUserNameAvailable] = useState<boolean | null>(null);
   const { register, handleSubmit, control, } = useForm<SignupFormData>();
 
-  const baseUrl = process.env.BACKEND_URL
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL
   const router = useRouter()
 
   const userName = useWatch({

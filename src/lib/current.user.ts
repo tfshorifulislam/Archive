@@ -5,7 +5,7 @@ export async function currentUser() {
   const cookie = headersList.get("cookie");
 
   const response = await fetch(
-    `${process.env.BACKEND_URL}/api/session`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/session`,
     {
       headers: {
         cookie: cookie ?? "",

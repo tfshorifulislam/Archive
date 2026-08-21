@@ -9,9 +9,19 @@ import { Separator } from "@/components/ui/separator"
 import { useSidebar } from "@/components/ui/sidebar"
 import { PanelLeftIcon } from "lucide-react"
 import { AvatarWithBadge } from "../Shared/Avatar"
+import AuthButton from "../SignUp.SignInButton/Auth.Button"
+import { useSession } from "@/lib/auth-client"
 
 export function SiteHeader() {
   const { toggleSidebar } = useSidebar()
+
+  const { data: session, isPending } = useSession();
+  const user = session
+  console.log(user)
+
+  if(isPending) {
+    return  <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
+  }
 
   return (
     <header className="sticky top-0 z-50 flex w-full items-center border-b bg-background">
@@ -31,21 +41,26 @@ export function SiteHeader() {
           className="mr-2 data-vertical:h-4 data-vertical:self-auto"
         />
 
-       
+
         <Breadcrumb className="hidden sm:block">
           <h1 className="text-2xl font-black">
             Archive
           </h1>
         </Breadcrumb>
 
-        
+
         <div className="ml-4">
           <SearchForm className="w-full sm:w-auto" />
         </div>
 
-      
+
         <div className="ml-auto">
-          <AvatarWithBadge />
+          {
+            user ?
+              <AvatarWithBadge />
+              :
+              <AuthButton />
+          }
         </div>
 
       </div>
