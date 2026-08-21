@@ -12,10 +12,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { useForm, useWatch } from "react-hook-form";
 import { signUp } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
 import { SignupFormData } from "../../../types/SignupFormData";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function SignupForm({ className, ...props }: React.ComponentProps<"form">) {
 
@@ -24,6 +24,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
   const { register, handleSubmit, control, } = useForm<SignupFormData>();
 
   const baseUrl = process.env.NEXT_PUBLIC_URI
+  const router = useRouter()
 
   const userName = useWatch({
     control,
@@ -70,14 +71,16 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
       email: data.email,
       password: data.password,
       userName: data.userName,
-      callbackURL: "/email-verified",
     });
+
 
     if (res.error) {
       console.log(res.error);
       alert(res.error.message);
       return;
     }
+
+    router.push('/auth/emailVerifyMessage')
   }
 
   return (
