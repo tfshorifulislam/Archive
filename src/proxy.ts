@@ -7,7 +7,7 @@ export async function proxy(request: NextRequest) {
     console.log("COOKIE:", cookie);
 
     const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URI}/api/session`,
+        `${process.env.BACKEND_URL}/api/session`,
         {
             headers: {
                 cookie: cookie ?? "",

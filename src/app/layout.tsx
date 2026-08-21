@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import Navbar from "@/components/Shared/Navbar";
 
 
 
@@ -27,7 +28,6 @@ export default function RootLayout({
       <body className="min-h-full w-full flex flex-col">
 
         <main className="w-full flex-1">
-
           <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
             {children}
           </div>
