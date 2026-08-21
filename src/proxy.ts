@@ -2,15 +2,24 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
+    const cookie = request.headers.get("cookie");
+
+    console.log("COOKIE:", cookie);
+
     const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URI}/api/auth/session`,
+        `${process.env.NEXT_PUBLIC_URI}/api/session`,
         {
             headers: {
-                cookie: request.headers.get("cookie") ?? "",
+                cookie: cookie ?? "",
             },
             cache: "no-store",
         }
     );
+
+    console.log("SESSION STATUS:", response.status);
+
+    const data = await response.text();
+    console.log("SESSION RESPONSE:", data);
 
     if (!response.ok) {
         return NextResponse.redirect(
