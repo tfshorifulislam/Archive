@@ -32,17 +32,17 @@ const data = {
 
     },
     {
-      title: "Post",
-      url: "/create-post",
-      icon: (
-        <SquarePlus />
-      ),
-    },
-    {
       title: "Profile",
       url: "#",
       icon: (
         <UserShield />
+      ),
+    },
+    {
+      title: "Post",
+      url: "/create-post",
+      icon: (
+        <SquarePlus />
       ),
     },
     {

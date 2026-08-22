@@ -7,25 +7,26 @@ import {
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { useSidebar } from "@/components/ui/sidebar"
-import { Menu } from "lucide-react"
+import { Bell, Menu, SquarePen } from "lucide-react"
 import { AvatarWithBadge } from "../Shared/Avatar"
 import AuthButton from "../SignUp.SignInButton/Auth.Button"
 import { useSession } from "@/lib/auth-client"
+import Link from "next/link"
+import { NavbarSkeleton } from "../Skeleton/NavbarSkeleton"
 
 export function SiteHeader() {
   const { toggleSidebar } = useSidebar()
 
   const { data: session, isPending } = useSession();
   const user = session?.user;
-  console.log(user)
 
   if (isPending) {
-    return <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
+    return <NavbarSkeleton />
   }
 
   return (
     <header className="sticky top-0 z-50 flex w-full items-center border-b bg-background">
-      <div className="flex h-(--header-height) w-full items-center gap-2 px-4">
+      <div className="flex h-(--header-height) w-full items-center ">
 
         <Button
           className="cursor-pointer text-gray-600"
@@ -58,12 +59,28 @@ export function SiteHeader() {
         <div className="ml-auto">
           {
             user ?
-              <AvatarWithBadge
-                user={user} />
+              <div className="flex justify-between items-center space-x-5">
+
+                <Link href='/create-post'>
+                  <div className="flex space-x-2 items-center justify-between">
+                    <SquarePen />
+                    <p>Write</p>
+                  </div>
+                </Link>
+
+                <Link href='/create-post'>
+                  <Bell />
+                </Link>
+
+                <AvatarWithBadge
+                  user={user}
+                />
+
+              </div>
               :
               <AuthButton />
           }
-        </div> 
+        </div>
 
       </div>
     </header>
