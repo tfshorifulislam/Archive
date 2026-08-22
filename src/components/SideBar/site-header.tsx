@@ -28,9 +28,9 @@ export function SiteHeader() {
       <div className="flex h-(--header-height) w-full items-center gap-2 px-4">
 
         <Button
-          className="cursor-pointer h-8 w-8"
+          className="cursor-pointer text-gray-600"
           variant="ghost"
-          size="icon"
+          size="lg"
           onClick={toggleSidebar}
         >
           {/* <PanelLeftIcon /> */}
