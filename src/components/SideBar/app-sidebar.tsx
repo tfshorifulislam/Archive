@@ -19,94 +19,95 @@ import { TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, LifeBuoyIcon,
 import { useSession } from "@/lib/auth-client"
 import Link from "next/link"
 
-const data = {
-  navMain: [
-    {
-      title: "Home",
-      url: "/",
-      icon: (
-        <TerminalSquareIcon
-        />
-      ),
-      isActive: true,
-
-    },
-    {
-      title: "Profile",
-      url: "#",
-      icon: (
-        <UserShield />
-      ),
-    },
-    {
-      title: "Post",
-      url: "/create-post",
-      icon: (
-        <SquarePlus />
-      ),
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: (
-        <Settings2Icon
-        />
-      ),
-    },
-  ],
-
-
-  navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: (
-        <LifeBuoyIcon
-        />
-      ),
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: (
-        <SendIcon
-        />
-      ),
-    },
-  ],
-
-
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: (
-        <FrameIcon
-        />
-      ),
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: (
-        <PieChartIcon
-        />
-      ),
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: (
-        <MapIcon
-        />
-      ),
-    },
-  ],
-}
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const { data: session } = useSession();
   const user = session?.user;
+
+  const data = {
+    navMain: [
+      {
+        title: "Home",
+        url: "/",
+        icon: (
+          <TerminalSquareIcon
+          />
+        ),
+        isActive: true,
+
+      },
+      {
+        title: "Profile",
+        url: `/profile/${user?.userName}`,
+        icon: (
+          <UserShield />
+        ),
+      },
+      {
+        title: "Post",
+        url: "/create-post",
+        icon: (
+          <SquarePlus />
+        ),
+      },
+      {
+        title: "Settings",
+        url: "#",
+        icon: (
+          <Settings2Icon
+          />
+        ),
+      },
+    ],
+
+
+    navSecondary: [
+      {
+        title: "Support",
+        url: "#",
+        icon: (
+          <LifeBuoyIcon
+          />
+        ),
+      },
+      {
+        title: "Feedback",
+        url: "#",
+        icon: (
+          <SendIcon
+          />
+        ),
+      },
+    ],
+
+
+    projects: [
+      {
+        name: "Design Engineering",
+        url: "#",
+        icon: (
+          <FrameIcon
+          />
+        ),
+      },
+      {
+        name: "Sales & Marketing",
+        url: "#",
+        icon: (
+          <PieChartIcon
+          />
+        ),
+      },
+      {
+        name: "Travel",
+        url: "#",
+        icon: (
+          <MapIcon
+          />
+        ),
+      },
+    ],
+  }
 
   if (!user) {
     return null
