@@ -7,7 +7,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { useSidebar } from "@/components/ui/sidebar"
-import { PanelLeftIcon } from "lucide-react"
+import { Menu } from "lucide-react"
 import { AvatarWithBadge } from "../Shared/Avatar"
 import AuthButton from "../SignUp.SignInButton/Auth.Button"
 import { useSession } from "@/lib/auth-client"
@@ -19,8 +19,8 @@ export function SiteHeader() {
   const user = session
   console.log(user)
 
-  if(isPending) {
-    return  <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
+  if (isPending) {
+    return <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
   }
 
   return (
@@ -28,12 +28,13 @@ export function SiteHeader() {
       <div className="flex h-(--header-height) w-full items-center gap-2 px-4">
 
         <Button
-          className="h-8 w-8"
+          className="cursor-pointer h-8 w-8"
           variant="ghost"
           size="icon"
           onClick={toggleSidebar}
         >
-          <PanelLeftIcon />
+          {/* <PanelLeftIcon /> */}
+          <Menu strokeWidth={2} />
         </Button>
 
         <Separator
@@ -57,9 +58,9 @@ export function SiteHeader() {
         <div className="ml-auto">
           {
             user ?
-            <AuthButton />
-            :
             <AvatarWithBadge />
+            :
+            <AuthButton />
           }
         </div>
 
