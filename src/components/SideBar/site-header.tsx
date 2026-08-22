@@ -16,7 +16,7 @@ export function SiteHeader() {
   const { toggleSidebar } = useSidebar()
 
   const { data: session, isPending } = useSession();
-  const user = session
+  const user = session?.user;
   console.log(user)
 
   if (isPending) {
@@ -58,11 +58,12 @@ export function SiteHeader() {
         <div className="ml-auto">
           {
             user ?
-            <AvatarWithBadge />
-            :
-            <AuthButton />
+              <AvatarWithBadge
+                user={user} />
+              :
+              <AuthButton />
           }
-        </div>
+        </div> 
 
       </div>
     </header>
