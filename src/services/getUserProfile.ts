@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { UserProfileResponse } from "../../types/userProfileTypes";
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -9,10 +10,17 @@ export const getUserProfile = async (
         throw new Error("Backend URL is not configured");
     }
 
-    const res = await fetch(`${baseUrl}/api/profile/${userName}`, {
-        credentials: "include",
-        cache: "no-store",
-    });
+    const cookieStore = await cookies();
+
+    const res = await fetch(
+        `${baseUrl}/api/profile/${userName}`,
+        {
+            headers: {
+                Cookie: cookieStore.toString(),
+            },
+            cache: "no-store",
+        }
+    );
 
     if (!res.ok) {
         throw new Error("Failed to fetch user profile");

@@ -1,13 +1,16 @@
 export type ProfileUser = {
-  id: string;
-  userName: string;
-  name: string;
-  image?: string | null;
-  createdAt: string;
+    id: string;
+    userName: string;
+    name: string;
+    image?: string | null;
+    createdAt: string;
+    params: Promise<{
+        userName: string;
+    }>;
 };
 
 export type UserProfileResponse = {
-  success: boolean;
-  user: ProfileUser;
-  isOwnProfile: boolean;
+    success: boolean;
+    user: ProfileUser;
+    isOwnProfile: boolean;
 };
