@@ -12,25 +12,28 @@ export default function NewsFeedLayout({
 }>) {
   return (
     <div className="[--header-height:calc(--spacing(14))]">
-      <SidebarProvider className="flex flex-col">
+  <SidebarProvider className="flex min-h-svh flex-col">
 
-        {/* Top Header */}
-        <SiteHeader />
+    {/* Top Header */}
+    <SiteHeader />
 
-        <div className="flex flex-1">
+    <div className="flex min-h-0 flex-1">
 
-          {/* Sidebar */}
-          <AppSidebar />
+      {/* Sidebar */}
+      <AppSidebar />
 
-          {/* Page Content */}
-          <SidebarInset>
-            {children}
-          </SidebarInset>
-          <div className="border-l hidden md:block max-w-60 w-md">
+      {/* Main Content */}
+      <SidebarInset className="min-w-0 flex-1">
+        {children}
+      </SidebarInset>
 
-          </div>
-        </div>
-      </SidebarProvider>
+      {/* Right Sidebar */}
+      <aside className="hidden w-72 shrink-0 border-l lg:block xl:w-80 2xl:w-96">
+        {/* Right sidebar content */}
+      </aside>
+
     </div>
+  </SidebarProvider>
+</div>
   );
 }

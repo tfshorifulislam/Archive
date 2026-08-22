@@ -20,13 +20,13 @@ export default async function ProfilePage({ params }: ProfileUser) {
     const { user, isOwnProfile } = profile;
 
     return (
-        <main className="mx-auto w-full max-w-5xl px-6 py-6 min-h-screen">
+        <main className="mx-auto w-full max-w-4xl min-h-screen">
             <ProfileHeader
                 isOwnProfile={isOwnProfile}
                 user={user} />
 
             <ProfileTabs
-                userName={user.userName}
+                user={user}
                 isOwnProfile={isOwnProfile}
             />
         </main>

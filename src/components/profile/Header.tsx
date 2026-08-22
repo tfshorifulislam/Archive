@@ -8,7 +8,7 @@ const ProfileHeader = ({
     isOwnProfile,
 }: ProfileHeaderProps) => {
     return (
-        <div className="flex w-full flex-col gap-5 sm:gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex w-full flex-col gap-5 sm:gap-6 lg:flex-row lg:items-center lg:justify-between mt-10">
 
             {/* Profile Info */}
             <div className="flex min-w-0 items-center gap-4 sm:gap-5">
