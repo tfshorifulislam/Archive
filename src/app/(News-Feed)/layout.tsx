@@ -13,12 +13,12 @@ export default function NewsFeedLayout({
   return (
     <div className="[--header-height:calc(--spacing(14))]">
       <SidebarProvider className="flex flex-col">
-        
+
         {/* Top Header */}
         <SiteHeader />
 
         <div className="flex flex-1">
-          
+
           {/* Sidebar */}
           <AppSidebar />
 
@@ -26,7 +26,9 @@ export default function NewsFeedLayout({
           <SidebarInset>
             {children}
           </SidebarInset>
+          <div className="border-l hidden md:block max-w-60 w-md">
 
+          </div>
         </div>
       </SidebarProvider>
     </div>

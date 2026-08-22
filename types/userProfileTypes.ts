@@ -14,3 +14,14 @@ export type UserProfileResponse = {
     user: ProfileUser;
     isOwnProfile: boolean;
 };
+
+
+export interface ProfileHeaderProps {
+    user: ProfileUser;
+    isOwnProfile: boolean;
+}
+
+export interface ProfileTabsProps {
+    userName: string;
+    isOwnProfile: boolean;
+}
