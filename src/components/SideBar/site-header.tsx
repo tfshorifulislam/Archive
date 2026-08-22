@@ -57,9 +57,9 @@ export function SiteHeader() {
         <div className="ml-auto">
           {
             user ?
-              <AvatarWithBadge />
-              :
-              <AuthButton />
+            <AuthButton />
+            :
+            <AvatarWithBadge />
           }
         </div>
 
