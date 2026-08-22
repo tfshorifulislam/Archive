@@ -55,7 +55,7 @@ const CreatePostWrapper = () => {
     };
 
     return (
-        <main className="min-h-screen bg-muted/30">
+        <main className="min-h-screen">
             <div className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
                 <div className="mb-8">
                     <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">

@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Playfair } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
-import Navbar from "@/components/Shared/Navbar";
-
 
 
 const playfair = Playfair({

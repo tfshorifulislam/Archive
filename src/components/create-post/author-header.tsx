@@ -1,10 +1,11 @@
 import { Globe2 } from "lucide-react";
 import { AvatarWithBadge } from "../Shared/Avatar";
+import { AvatarWithBadgeProps } from "../../../types/avatarWithBadgeProps";
 
-export const AuthorHeader = ({ user }) => {
+export const AuthorHeader = ({ user }: AvatarWithBadgeProps) => {
     return (
         <div className="flex items-center gap-3 p-5 sm:p-6">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+            <div className="flex shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
                 <AvatarWithBadge
                     user={user} />
             </div>
