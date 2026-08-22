@@ -22,7 +22,6 @@ export interface ProfileHeaderProps {
 }
 
 export interface ProfileTabsProps {
-    userName: string;
     user: ProfileUser;
     isOwnProfile: boolean;
 }

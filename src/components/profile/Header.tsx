@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Ellipsis } from "lucide-react";
 import { ProfileHeaderProps } from "../../../types/userProfileTypes";
 import { Button } from "../ui/button";
+import { EditProfileDialog } from "./EditProfile";
 
 const ProfileHeader = ({
     user,
@@ -33,12 +34,13 @@ const ProfileHeader = ({
 
             {/* Actions */}
             <div className="flex items-center gap-3 self-start sm:gap-4 lg:self-auto">
-                <Button
-                    size="sm"
-                    className="px-5 sm:px-6"
-                >
-                    {isOwnProfile ? "Edit" : "Follow"}
-                </Button>
+                <div>
+                    {isOwnProfile ?
+                        <EditProfileDialog
+                            user={user} />
+                        :
+                        <Button>Follow</Button>}
+                </div>
 
                 <Button
                     type="button"
