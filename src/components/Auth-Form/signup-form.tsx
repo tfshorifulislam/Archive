@@ -17,6 +17,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { checkUsername } from "@/services/checkUsername";
 
 export function SignupForm({ className, ...props }: React.ComponentProps<"form">) {
 
@@ -24,7 +25,6 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
   const [userNameAvailable, setUserNameAvailable] = useState<boolean | null>(null);
   const { register, handleSubmit, control, } = useForm<SignupFormData>();
 
-  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL
   const router = useRouter()
 
   const userName = useWatch({
@@ -40,25 +40,20 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
 
     const timer = setTimeout(async () => {
       try {
-
-        const res = await fetch(
-          `${baseUrl}/api/user/check-ussername?userName=${encodeURIComponent(userName)}`
-        );
-
-        const data = await res.json();
+        const data = await checkUsername(userName);
 
         setUserNameMessage(data.message);
         setUserNameAvailable(data.available);
-
       } catch (error) {
         console.error(error);
+
         setUserNameMessage("Unable to check username");
         setUserNameAvailable(false);
       }
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [userName, baseUrl]);
+  }, [userName]);
 
 
   const handleSignUp = async (data: SignupFormData) => {
