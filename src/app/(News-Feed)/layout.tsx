@@ -24,13 +24,13 @@ export default function NewsFeedLayout({
 
       {/* Center Feed */}
       <SidebarInset className="min-w-0 flex-1">
-        <main className="mx-auto w-full max-w-[680px] px-4 py-6">
+        <main className="mx-auto w-full max-w-170 px-4 py-6">
           {children}
         </main>
       </SidebarInset>
 
       {/* Right Sidebar */}
-      <aside className="hidden w-[300px] shrink-0 border-l lg:block">
+      <aside className="hidden w-75 shrink-0 border-l lg:block">
         <div className="sticky top-14 p-4">
           {/* Right sidebar content */}
         </div>
