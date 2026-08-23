@@ -15,12 +15,8 @@ import { PostFormFooter } from "@/components/create-post/post-form-footer";
 import { useSession } from "@/lib/auth-client";
 import { createPost } from "@/services/upload.media";
 import { useRouter } from "next/navigation";
+import { CreatePostFormData } from "../../../types/createPost";
 
-type CreatePostFormData = {
-    title: string;
-    content: string;
-    file: FileList;
-};
 
 const CreatePostWrapper = () => {
     const [coverImage, setCoverImage] = useState<string | null>(null);
@@ -50,7 +46,7 @@ const CreatePostWrapper = () => {
             formData.append("title", data.title);
             formData.append("content", data.content);
 
-            formData.append("tags",JSON.stringify(tags));
+            formData.append("tags", JSON.stringify(tags));
 
             if (data.file?.[0]) {
                 formData.append(
@@ -70,16 +66,12 @@ const CreatePostWrapper = () => {
         }
     };
 
-    const handleCoverImage = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleCoverImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
 
         if (!file) return;
 
-        setCoverImage(
-            URL.createObjectURL(file)
-        );
+        setCoverImage(URL.createObjectURL(file));
     };
 
     const removeCoverImage = () => {
@@ -112,11 +104,7 @@ const CreatePostWrapper = () => {
     };
 
     const removeTag = (tagToRemove: string) => {
-        setTags((prev) =>
-            prev.filter(
-                (tag) => tag !== tagToRemove
-            )
-        );
+        setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
     };
 
     return (

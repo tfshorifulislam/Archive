@@ -22,3 +22,9 @@ export interface CreatePostResponse {
   message: string;
   post: Post;
 }
+
+export type CreatePostFormData = {
+  title: string;
+  content: string;
+  file: FileList;
+};

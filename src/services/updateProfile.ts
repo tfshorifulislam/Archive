@@ -8,7 +8,6 @@ export const updateProfile = async (data: UpdateProfileData): Promise<UpdateProf
         throw new Error("Backend URL is not configured");
     }
 
-    console.log(data)
     const response = await fetch(`${baseUrl}/api/profile-update`, {
         method: "PATCH",
         headers: {
