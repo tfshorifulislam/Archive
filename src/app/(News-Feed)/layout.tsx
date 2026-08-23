@@ -11,7 +11,7 @@ export default function NewsFeedLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="[--header-height:calc(--spacing(14))]">
+ <div className="[--header-height:calc(--spacing(14))]">
   <SidebarProvider className="flex min-h-svh flex-col">
 
     {/* Top Header */}
@@ -19,17 +19,21 @@ export default function NewsFeedLayout({
 
     <div className="flex min-h-0 flex-1">
 
-      {/* Sidebar */}
+      {/* Left Sidebar */}
       <AppSidebar />
 
-      {/* Main Content */}
+      {/* Center Feed */}
       <SidebarInset className="min-w-0 flex-1">
-        {children}
+        <main className="mx-auto w-full max-w-[680px] px-4 py-6">
+          {children}
+        </main>
       </SidebarInset>
 
       {/* Right Sidebar */}
-      <aside className="hidden w-72 shrink-0 border-l lg:block xl:w-80 2xl:w-96">
-        {/* Right sidebar content */}
+      <aside className="hidden w-[300px] shrink-0 border-l lg:block">
+        <div className="sticky top-14 p-4">
+          {/* Right sidebar content */}
+        </div>
       </aside>
 
     </div>
