@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
-    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -15,39 +16,93 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
 import { AboutProps } from "../../../types/userProfileTypes";
 import { updateProfile } from "@/services/updateProfile";
+import { useRouter } from "next/navigation";
+
+
+type FormData = {
+    name: string;
+    userName: string;
+};
+
+const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export function EditProfileDialog({ user }: AboutProps) {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [userNameMessage, setUserNameMessage] = useState("");
+    const [userNameAvailable, setUserNameAvailable] = useState(true);
 
-    const handleSubmit = async (
-        e: React.FormEvent<HTMLFormElement>
-    ) => {
-        e.preventDefault();
+    const router = useRouter();
+
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+    } = useForm<FormData>({
+        defaultValues: {
+            name: user.name,
+            userName: user.userName,
+        },
+    });
+
+    const userName = watch("userName");
+
+    // Username availability check
+    useEffect(() => {
+
+        if (userName === user.userName) {
+            setUserNameMessage("");
+            setUserNameAvailable(true);
+            return;
+        }
+
+        if (!userName || userName.length < 3) {
+            setUserNameMessage("");
+            setUserNameAvailable(false);
+            return;
+        }
+
+        const timer = setTimeout(async () => {
+            try {
+                const res = await fetch(
+                    `${baseUrl}/api/user/check-ussername?userName=${encodeURIComponent(
+                        userName
+                    )}`
+                );
+
+                const data = await res.json();
+
+                setUserNameMessage(data.message);
+                setUserNameAvailable(data.available);
+            } catch (error) {
+                console.error(error);
+
+                setUserNameMessage("Unable to check username");
+                setUserNameAvailable(false);
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [userName, user.userName]);
+
+    const onSubmit = async (data: FormData) => {
+        if (!userNameAvailable) {
+            return;
+        }
 
         try {
             setLoading(true);
-            setError("");
 
-            const formData = new FormData(e.currentTarget);
-
-            const name = formData.get("name") as string;
-            const userName = formData.get("userName") as string;
-
-            const result = await updateProfile({
-                name,
-                userName,
-            });
+            const result = await updateProfile(data);
 
             console.log(result);
+            router.push(`/profile/${data.userName}`);
+
         } catch (error) {
-            setError(
-                error instanceof Error
-                    ? error.message
-                    : "Something went wrong"
-            );
+            console.error(error);
         } finally {
             setLoading(false);
         }
@@ -58,15 +113,12 @@ export function EditProfileDialog({ user }: AboutProps) {
             <DialogTrigger render={<Button>Edit</Button>} />
 
             <DialogContent className="sm:max-w-sm">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogHeader>
-                        <DialogTitle>
-                            Edit profile
-                        </DialogTitle>
+                        <DialogTitle>Edit profile</DialogTitle>
 
                         <DialogDescription>
-                            Make changes to your profile here.
-                            Click save when you&apos;re done.
+                            Update your name and username.
                         </DialogDescription>
                     </DialogHeader>
 
@@ -79,9 +131,20 @@ export function EditProfileDialog({ user }: AboutProps) {
 
                             <Input
                                 id="name"
-                                name="name"
-                                defaultValue={user.name}
+                                {...register("name", {
+                                    required: "Name is required",
+                                    minLength: {
+                                        value: 2,
+                                        message: "Name must be at least 2 characters",
+                                    },
+                                })}
                             />
+
+                            {errors.name && (
+                                <p className="text-sm text-destructive">
+                                    {errors.name.message}
+                                </p>
+                            )}
                         </Field>
 
                         {/* Username */}
@@ -92,33 +155,51 @@ export function EditProfileDialog({ user }: AboutProps) {
 
                             <Input
                                 id="userName"
-                                name="userName"
-                                defaultValue={user.userName}
+                                {...register("userName", {
+                                    required: "Username is required",
+                                    minLength: {
+                                        value: 3,
+                                        message:
+                                            "Username must be at least 3 characters",
+                                    },
+                                })}
                             />
-                        </Field>
 
-                        {error && (
-                            <p className="text-sm text-destructive">
-                                {error}
-                            </p>
-                        )}
+                            {errors.userName && (
+                                <p className="text-sm text-destructive">
+                                    {errors.userName.message}
+                                </p>
+                            )}
+
+                            {!errors.userName && userNameMessage && (
+                                <p
+                                    className={`text-sm ${userNameAvailable
+                                        ? "text-green-600"
+                                        : "text-destructive"
+                                        }`}
+                                >
+                                    {userNameMessage}
+                                </p>
+                            )}
+                        </Field>
                     </FieldGroup>
 
                     <DialogFooter>
-                        <DialogClose
-                            render={
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                >
-                                    Cancel
-                                </Button>
-                            }
-                        />
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => { }}
+                        >
+                            Cancel
+                        </Button>
 
                         <Button
-                            disabled={loading}
                             type="submit"
+                            disabled={
+                                loading ||
+                                (!userNameAvailable &&
+                                    userName !== user.userName)
+                            }
                         >
                             {loading
                                 ? "Saving..."
