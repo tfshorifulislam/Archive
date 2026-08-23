@@ -1,14 +1,17 @@
 import { CreatePostResponse } from "../../types/createPost";
 
+
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export const createPost = async (formData: FormData): Promise<CreatePostResponse> => {
-
+export const createPost = async (
+    formData: FormData
+): Promise<CreatePostResponse> => {
     if (!baseUrl) {
         throw new Error("Backend URL is not configured");
     }
 
-    const response = await fetch(`${baseUrl}/api/create/posts`,
+    const response = await fetch(
+        `${baseUrl}/api/create/posts`,
         {
             method: "POST",
             credentials: "include",
@@ -16,7 +19,7 @@ export const createPost = async (formData: FormData): Promise<CreatePostResponse
         }
     );
 
-    const result: CreatePostResponse = await response.json();
+    const result = await response.json();
 
     if (!response.ok) {
         throw new Error(
