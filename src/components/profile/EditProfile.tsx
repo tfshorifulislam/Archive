@@ -20,6 +20,7 @@ import { Label } from "@/components/ui/label";
 import { AboutProps } from "../../../types/userProfileTypes";
 import { updateProfile } from "@/services/updateProfile";
 import { useRouter } from "next/navigation";
+import { checkUsername } from "@/services/checkUsername";
 
 
 type FormData = {
@@ -50,7 +51,6 @@ export function EditProfileDialog({ user }: AboutProps) {
 
     const userName = watch("userName");
 
-    // Username availability check
     useEffect(() => {
 
         if (userName === user.userName) {
@@ -67,13 +67,8 @@ export function EditProfileDialog({ user }: AboutProps) {
 
         const timer = setTimeout(async () => {
             try {
-                const res = await fetch(
-                    `${baseUrl}/api/user/check-ussername?userName=${encodeURIComponent(
-                        userName
-                    )}`
-                );
-
-                const data = await res.json();
+                
+                const data = await checkUsername(userName);
 
                 setUserNameMessage(data.message);
                 setUserNameAvailable(data.available);
@@ -88,25 +83,25 @@ export function EditProfileDialog({ user }: AboutProps) {
         return () => clearTimeout(timer);
     }, [userName, user.userName]);
 
-    const onSubmit = async (data: FormData) => {
-        if (!userNameAvailable) {
-            return;
-        }
+  const onSubmit = async (data: FormData) => {
+    if (!userNameAvailable) {
+        return;
+    }
 
-        try {
-            setLoading(true);
+    try {
+        setLoading(true);
 
-            const result = await updateProfile(data);
+        await updateProfile(data);
 
-            console.log(result);
-            router.push(`/profile/${data.userName}`);
+        router.replace(`/profile/${data.userName}`);
+        router.refresh();
 
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    } catch (error) {
+        console.error(error);
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
         <Dialog>
