@@ -4,6 +4,7 @@ import { MessageCircle, Heart, Bookmark, MoreHorizontal } from "lucide-react";
 import { Post } from "../../../types/createPost";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { AvatarWithBadge } from "../Shared/Avatar";
 
 interface PostCardProps {
     post: Post;
@@ -34,18 +35,9 @@ const PostCard = ({ post }: PostCardProps) => {
                         href={`/profile/${post.user.userName}`}
                         className="flex items-center gap-3"
                     >
-                        <Avatar className="h-9 w-9">
-                            <AvatarImage
-                                src={post.user.image ?? undefined}
-                                alt={post.user.name}
-                            />
-
-                            <AvatarFallback>
-                                {post.user.name
-                                    .slice(0, 2)
-                                    .toUpperCase()}
-                            </AvatarFallback>
-                        </Avatar>
+                        <AvatarWithBadge
+                            user={post.user}
+                        />
 
                         <div className="leading-tight">
                             <p className="text-sm font-semibold">
@@ -85,13 +77,12 @@ const PostCard = ({ post }: PostCardProps) => {
                 {post.tags.length > 0 && (
                     <div className="mt-5 flex flex-wrap gap-2">
                         {post.tags.map((tag) => (
-                            <Link
+                            <span
                                 key={tag}
-                                href={`/tags/${tag}`}
-                                className="rounded-md px-2 py-1 text-xs text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                                className="rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground"
                             >
                                 #{tag}
-                            </Link>
+                            </span>
                         ))}
                     </div>
                 )}

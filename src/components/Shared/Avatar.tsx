@@ -29,7 +29,7 @@ export function AvatarWithBadge({ user }: AvatarWithBadgeProps) {
         {fallback}
       </AvatarFallback>
 
-      <AvatarBadge className="bg-green-600 dark:bg-green-800" />
+      {/* <AvatarBadge className="bg-green-600 dark:bg-green-800" /> */}
     </Avatar>
   );
 }

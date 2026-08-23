@@ -1,4 +1,3 @@
-import HeaderHome from "@/components/home/header.home";
 import PostCard from "@/components/home/Post.Card";
 import { getAllPost } from "@/services/get.All.Posts";
 
@@ -9,9 +8,7 @@ const HomePage = async () => {
 
   return (
     <div>
-      <HeaderHome />
-
-      <div>
+      <div className="space-y-5 my-5">
         {postsItem.map((post) => (
           <div key={post.id}>
             <PostCard
