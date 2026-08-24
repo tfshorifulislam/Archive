@@ -113,8 +113,23 @@ const PostDetailsPage = async ({ params }: PostDetailsPageProps) => {
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 896px"
                             className="h-auto w-full object-contain"
                         />
+
+                        {/* Tags */}
+                        {post.tags.length > 0 && (
+                            <div className="mt-6 flex flex-wrap gap-2">
+                                {post.tags.map((tag) => (
+                                    <span
+                                        key={tag}
+                                        className="rounded-full bg-muted px-3 py-1.5 text-xs text-muted-foreground"
+                                    >
+                                        #{tag}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
+
 
                 {/* Content */}
                 <div className="mx-auto max-w-170">
@@ -122,20 +137,6 @@ const PostDetailsPage = async ({ params }: PostDetailsPageProps) => {
                     <div className="whitespace-pre-wrap text-[18px] leading-[1.8] text-foreground/90 sm:text-[19px] sm:leading-[1.85]">
                         {post.content}
                     </div>
-
-                    {/* Tags */}
-                    {post.tags.length > 0 && (
-                        <div className="mt-12 flex flex-wrap gap-2 border-t pt-8">
-                            {post.tags.map((tag) => (
-                                <span
-                                    key={tag}
-                                    className="rounded-full bg-muted px-3 py-1.5 text-xs text-muted-foreground"
-                                >
-                                    #{tag}
-                                </span>
-                            ))}
-                        </div>
-                    )}
 
                     {/* Author Footer */}
                     <div className="my-16 border-y py-8">
