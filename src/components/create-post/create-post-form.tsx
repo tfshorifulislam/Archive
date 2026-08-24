@@ -48,7 +48,7 @@ const CreatePostForm = ({ user, coverImage, tags, tagInput, loading, onImageChan
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="overflow-hidden rounded-2xl border bg-background shadow-sm"
+            className="overflow-hidden rounded-2xl border bg-background "
         >
             <AuthorHeader user={user} />
 

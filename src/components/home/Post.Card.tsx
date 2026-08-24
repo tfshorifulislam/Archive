@@ -94,47 +94,20 @@ const PostCard = ({ post }: PostCardProps) => {
                 </div>
 
                 {/* ================= IMAGE ================= */}
-                {post.mediaUrl &&
-                    post.mediaType === "image" && (
-                        <Link
-                            href={`/posts/${post.id}`}
-                            className="
-                                relative
-                                flex
-                                h-32
-                                w-40
-                                shrink-0
-                                items-center
-                                justify-center
-                                overflow-hidden
-                                rounded-xl
-                                sm:h-36
-                                sm:w-52
-                                md:h-40
-                                md:w-60
-                            "
-                        >
-                            <Image
-                                src={post.mediaUrl}
-                                alt={
-                                    post.title ||
-                                    "Post image"
-                                }
-                                fill
-                                sizes="
-                                    (max-width: 640px) 160px,
-                                    (max-width: 768px) 208px,
-                                    240px
-                                "
-                                className="
-                                    object-contain
-                                    transition-transform
-                                    duration-300
-                                    group-hover:scale-[1.02]
-                                "
-                            />
-                        </Link>
-                    )}
+                {post.mediaUrl && post.mediaType === "image" && (
+                    <Link
+                        href={`/posts/${post.id}`}
+                        className="relative flex h-36 w-44 shrink-0 items-center justify-center overflow-hidden rounded-xl sm:h-40 sm:w-56 md:h-44 md:w-64"
+                    >
+                        <Image
+                            src={post.mediaUrl}
+                            alt={post.title || "Post image"}
+                            fill
+                            sizes="(max-width: 640px) 176px, (max-width: 768px) 224px, 256px"
+                            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                        />
+                    </Link>
+                )}
             </div>
 
             {/* ================= TAGS ================= */}
