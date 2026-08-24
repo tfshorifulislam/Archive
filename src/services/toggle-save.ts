@@ -1,27 +1,32 @@
-import { cookies } from "next/headers";
-
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export const checkSavedPost = async (postId: string) => {
+export const toggleSavePost = async (postId: string) => {
     if (!baseUrl) {
         throw new Error("Backend URL is not configured");
     }
 
-    const cookieStore = await cookies();
-
     const res = await fetch(
         `${baseUrl}/api/toggle-save/${postId}`,
         {
-            headers: {
-                Cookie: cookieStore.toString(),
-            },
-            cache: "no-store",
+            method: "POST",
+            credentials: "include",
         }
     );
 
-    if (!res.ok) {
-        throw new Error("Failed to check saved post");
+    const data = await res.json();
+
+    if (res.status === 401) {
+        return {
+            success: false,
+            unauthorized: true,
+        };
     }
 
-    return res.json();
+    if (!res.ok) {
+        throw new Error(
+            data.message || "Failed to toggle saved post"
+        );
+    }
+
+    return data;
 };

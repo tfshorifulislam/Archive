@@ -1,23 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-    MessageCircle,
-    Heart,
-    Bookmark,
-    MoreHorizontal,
-} from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import parse from "html-react-parser";
 
 import { Post } from "../../../types/createPost";
 import { Button } from "@/components/ui/button";
 import { AvatarWithBadge } from "../Shared/Avatar";
+import PostCardFooter from "./Post.Card.Footer";
+import { checkSavedPost } from "@/services/check-save-post";
 
 interface PostCardProps {
     post: Post;
 }
 
-const PostCard = ({ post }: PostCardProps) => {
+const PostCard = async ({ post }: PostCardProps) => {
     const formattedDate = formatDistanceToNow(
         new Date(post.createdAt),
         {
@@ -25,9 +22,12 @@ const PostCard = ({ post }: PostCardProps) => {
         }
     );
 
+    const savedData = await checkSavedPost(post.id);
+
     return (
         <article className="group border-b bg-background py-8 sm:py-10">
-            {/* ================= AUTHOR ================= */}
+            
+            {/* Author */}
             <div className="flex items-center justify-between">
                 <Link
                     href={`/profile/${post.user.userName}`}
@@ -56,9 +56,10 @@ const PostCard = ({ post }: PostCardProps) => {
                 </Button>
             </div>
 
-            {/* ================= POST ================= */}
+            {/* Post */}
             <div className="mt-7 flex gap-6 sm:mt-8 sm:gap-8">
-                {/* ================= TEXT ================= */}
+
+                {/* Text */}
                 <div className="min-w-0 flex-1">
                     <Link href={`/posts/${post.id}`}>
                         <h2 className="line-clamp-2 text-2xl font-bold leading-[1.2] tracking-[-0.02em] transition-colors group-hover:text-primary sm:text-3xl">
@@ -79,7 +80,6 @@ const PostCard = ({ post }: PostCardProps) => {
                         </Link>
                     </div>
 
-                    {/* Meta */}
                     <div className="mt-5 flex flex-wrap items-center gap-2.5 text-xs text-muted-foreground sm:text-sm">
                         <span>5 min read</span>
 
@@ -93,40 +93,31 @@ const PostCard = ({ post }: PostCardProps) => {
                     </div>
                 </div>
 
-                {/* ================= IMAGE ================= */}
-                {post.mediaUrl && post.mediaType === "image" && (
-                    <Link
-                        href={`/posts/${post.id}`}
-                        className="relative flex h-36 w-44 shrink-0 items-center justify-center overflow-hidden rounded-xl sm:h-40 sm:w-56 md:h-44 md:w-64"
-                    >
-                        <Image
-                            src={post.mediaUrl}
-                            alt={post.title || "Post image"}
-                            fill
-                            sizes="(max-width: 640px) 176px, (max-width: 768px) 224px, 256px"
-                            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                        />
-                    </Link>
-                )}
+                {/* Image */}
+                {post.mediaUrl &&
+                    post.mediaType === "image" && (
+                        <Link
+                            href={`/posts/${post.id}`}
+                            className="relative flex h-36 w-44 shrink-0 items-center justify-center overflow-hidden rounded-xl sm:h-40 sm:w-56 md:h-44 md:w-64"
+                        >
+                            <Image
+                                src={post.mediaUrl}
+                                alt={post.title || "Post image"}
+                                fill
+                                sizes="(max-width: 640px) 176px, (max-width: 768px) 224px, 256px"
+                                className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                            />
+                        </Link>
+                    )}
             </div>
 
-            {/* ================= TAGS ================= */}
+            {/* Tags */}
             {post.tags.length > 0 && (
                 <div className="mt-6 flex flex-wrap gap-2">
                     {post.tags.map((tag) => (
                         <span
                             key={tag}
-                            className="
-                                rounded-full
-                                bg-muted
-                                px-3
-                                py-1.5
-                                text-xs
-                                font-medium
-                                text-muted-foreground
-                                transition-colors
-                                hover:bg-muted/80
-                            "
+                            className="rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/80"
                         >
                             #{tag}
                         </span>
@@ -134,54 +125,11 @@ const PostCard = ({ post }: PostCardProps) => {
                 </div>
             )}
 
-            {/* ================= FOOTER ================= */}
-            <div className="mt-7 flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                    {/* Like */}
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="
-                            h-9
-                            gap-2
-                            rounded-full
-                            px-3
-                            text-muted-foreground
-                            hover:text-foreground
-                        "
-                    >
-                        <Heart className="h-4 w-4" />
-
-                        <span className="text-xs sm:text-sm">
-                            Like
-                        </span>
-                    </Button>
-
-                    {/* Comment */}
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className=" h-9 gap-2 rounded-full px-3 text-muted-foreground hover:text-foreground "
-                    >
-                        <MessageCircle className="h-4 w-4" />
-
-                        <span className="text-xs sm:text-sm">
-                            Comment
-                        </span>
-                    </Button>
-                </div>
-
-                {/* Bookmark */}
-                <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground">
-                    <Bookmark className="h-4 w-4" />
-                </Button>
-            </div>
+            {/* Footer */}
+            <PostCardFooter
+                postId={post.id}
+                saved={savedData.saved}
+            />
         </article>
     );
 };
