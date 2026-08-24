@@ -7,6 +7,7 @@ import {
     MoreHorizontal,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import parse from "html-react-parser";
 
 import { Post } from "../../../types/createPost";
 import { Button } from "@/components/ui/button";
@@ -66,9 +67,9 @@ const PostCard = ({ post }: PostCardProps) => {
                     </Link>
 
                     <div className="mt-4">
-                        <p className="line-clamp-3 text-[15px] leading-7 text-muted-foreground sm:text-base sm:leading-7">
-                            {post.content}
-                        </p>
+                        <div className="line-clamp-3 text-[15px] leading-7 text-muted-foreground sm:text-base sm:leading-7">
+                            {parse(post.content)}
+                        </div>
 
                         <Link
                             href={`/posts/${post.id}`}

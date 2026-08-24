@@ -15,11 +15,7 @@ interface CoverImageUploadProps {
     onImageRemove: () => void;
 }
 
-export const CoverImageUpload = ({
-    coverImage,
-    onImageChange,
-    onImageRemove,
-}: CoverImageUploadProps) => {
+export const CoverImageUpload = ({ coverImage, onImageChange, onImageRemove, }: CoverImageUploadProps) => {
     return (
         <div className="space-y-3">
 
@@ -44,7 +40,7 @@ export const CoverImageUpload = ({
                         width={1200}
                         height={600}
                         unoptimized
-                        className="max-h-[420px] w-full object-cover"
+                        className="max-h-105 w-full object-cover"
                     />
 
                     <Button
@@ -61,33 +57,9 @@ export const CoverImageUpload = ({
             ) : (
                 <label
                     htmlFor="cover-image"
-                    className="
-                        group
-                        flex
-                        min-h-[180px]
-                        w-full
-                        cursor-pointer
-                        flex-col
-                        items-center
-                        justify-center
-                        rounded-xl
-                        border-2
-                        border-dashed
-                        bg-muted/20
-                        transition
-                        hover:bg-muted/40
-                    "
+                    className="group flex min-h-45 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed bg-muted/20 transition hover:bg-muted/40"
                 >
-                    <div className="
-                        mb-3
-                        flex
-                        h-12
-                        w-12
-                        items-center
-                        justify-center
-                        rounded-full
-                        bg-muted
-                    ">
+                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
                         <ImagePlus className="h-5 w-5 text-muted-foreground" />
                     </div>
 

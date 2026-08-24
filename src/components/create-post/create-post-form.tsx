@@ -1,8 +1,7 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
@@ -10,17 +9,19 @@ import { AuthorHeader } from "./author-header";
 import { CoverImageUpload } from "./cover-image-upload";
 import { TagInputSection } from "./tag-input";
 import { PostFormFooter } from "./post-form-footer";
+import RichTextEditor from "./rich-text-editor";
 
-import { CreatePostFormData, PostUser } from "../../../types/createPost";
+import {
+    CreatePostFormData,
+    PostUser,
+} from "../../../types/createPost";
+import { Textarea } from "../ui/textarea";
 
 interface CreatePostFormProps {
-     user: PostUser | undefined;
-
+    user: PostUser | undefined;
     coverImage: string | null;
-
     tags: string[];
     tagInput: string;
-
     loading: boolean;
 
     onImageChange: (
@@ -29,80 +30,45 @@ interface CreatePostFormProps {
 
     onImageRemove: () => void;
 
-    onTagInputChange: (
-        value: string
-    ) => void;
+    onTagInputChange: (value: string) => void;
 
     onAddTag: () => void;
 
-    onRemoveTag: (
-        tag: string
-    ) => void;
+    onRemoveTag: (tag: string) => void;
 
     onSubmit: (
         data: CreatePostFormData
     ) => Promise<void>;
 }
 
-const CreatePostForm = ({
-    user,
+const CreatePostForm = ({ user, coverImage, tags, tagInput, loading, onImageChange, onImageRemove, onTagInputChange, onAddTag, onRemoveTag, onSubmit, }: CreatePostFormProps) => {
 
-    coverImage,
-
-    tags,
-    tagInput,
-
-    loading,
-
-    onImageChange,
-    
-    onImageRemove,
-
-    onTagInputChange,
-    onAddTag,
-    onRemoveTag,
-
-    onSubmit,
-}: CreatePostFormProps) => {
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<CreatePostFormData>();
+    const { register, handleSubmit, control, formState: { errors }, } = useForm<CreatePostFormData>();
 
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
             className="overflow-hidden rounded-2xl border bg-background shadow-sm"
         >
-
             <AuthorHeader user={user} />
 
             <Separator />
 
             <div className="space-y-7 p-5 sm:p-6">
 
-                {/* Title */}
                 <div>
-                    <Input
+                    <Textarea
                         {...register("title", {
                             required: "Title is required",
                         })}
                         placeholder="Title"
-                        className="
-                            h-auto
-                            border-0
-                            bg-transparent
-                            px-0
-                            text-4xl
-                            font-bold
-                            tracking-tight
-                            shadow-none
-                            placeholder:text-muted-foreground/50
-                            focus-visible:ring-0
-                            md:text-5xl
-                        "
+                        rows={1}
+                        onInput={(e) => {
+                            const textarea = e.currentTarget;
+                            textarea.style.height = "auto";
+                            textarea.style.height = `${textarea.scrollHeight}px`;
+                        }}
+                        className="w-full resize-none overflow-hidden border-0 px-0 text-4xl font-bold leading-tight shadow-none focus-visible:ring-0 md:text-3xl"
                     />
 
                     {errors.title && (
@@ -114,43 +80,32 @@ const CreatePostForm = ({
 
                 {/* Content */}
                 <div className="space-y-2">
-
-                    <Label
-                        htmlFor="content"
-                        className="text-sm font-semibold"
-                    >
+                    <Label className="text-sm font-semibold">
                         Content
                     </Label>
 
-                    <textarea
-                        id="content"
-                        {...register("content", {
-                            required: "Content is required",
-                        })}
-                        rows={5}
-                        placeholder="Write your story, idea or thoughts..."
-                        className="
-                            w-full
-                            resize-none
-                            rounded-xl
-                            border
-                            bg-background
-                            px-4
-                            py-4
-                            text-sm
-                            leading-7
-                            outline-none
-                            placeholder:text-muted-foreground
-                            focus:ring-1
-                            focus:ring-ring
-                        "
-                    />
+                    <Controller
+                        name="content"
+                        control={control}
+                        rules={{
+                            validate: (value) => {
+                                const text = value
+                                    .replace(/<[^>]*>/g, "")
+                                    .trim();
 
-                    {errors.content && (
-                        <p className="text-sm text-destructive">
-                            {errors.content.message}
-                        </p>
-                    )}
+                                return text.length > 0
+                                    ? true
+                                    : "Content is required";
+                            },
+                        }}
+                        render={({ field, fieldState }) => (
+                            <RichTextEditor
+                                value={field.value}
+                                onChange={field.onChange}
+                                error={fieldState.error?.message}
+                            />
+                        )}
+                    />
                 </div>
 
                 {/* Cover Image */}
@@ -174,15 +129,11 @@ const CreatePostForm = ({
                         }
                     }}
                 />
-
             </div>
 
             <Separator />
 
-            <PostFormFooter
-                loading={loading}
-            />
-
+            <PostFormFooter loading={loading} />
         </form>
     );
 };
