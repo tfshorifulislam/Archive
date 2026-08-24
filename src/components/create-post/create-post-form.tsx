@@ -55,6 +55,7 @@ const CreatePostForm = ({
     loading,
 
     onImageChange,
+    
     onImageRemove,
 
     onTagInputChange,

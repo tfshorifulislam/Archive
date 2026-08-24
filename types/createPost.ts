@@ -2,7 +2,7 @@ export interface PostUser {
     id: string;
     name: string;
     userName: string;
-    image: string | null;
+    image?: string | null;
 }
 
 export interface Post {
