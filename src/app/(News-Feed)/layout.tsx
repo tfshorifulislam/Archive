@@ -12,7 +12,7 @@ export default function NewsFeedLayout({
 }>) {
   return (
  <div className="[--header-height:calc(--spacing(14))]">
-  <SidebarProvider className="flex min-h-svh flex-col">
+  <SidebarProvider className="flex min-h-svh flex-col ">
 
     {/* Top Header */}
     <SiteHeader />
@@ -24,7 +24,7 @@ export default function NewsFeedLayout({
 
       {/* Center Feed */}
       <SidebarInset className="min-w-0 flex-1">
-        <main className="mx-auto w-full max-w-170 px-4 py-6">
+        <main className="mx-auto w-full max-w-250 px-4 py-6">
           {children}
         </main>
       </SidebarInset>
