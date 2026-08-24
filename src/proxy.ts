@@ -36,5 +36,6 @@ export const config = {
         "/profile/:path*",
         "/settings/:path*",
         '/profile',
+        "/posts/:path*",
     ],
 };
