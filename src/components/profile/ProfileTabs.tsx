@@ -8,14 +8,20 @@ import {
 } from "@/components/ui/tabs";
 
 import { ProfileTabsProps } from "../../../types/userProfileTypes";
+
 import About from "./About";
+import ProfilePosts from "./ProfilePosts";
 
 const ProfileTabs = ({
     isOwnProfile,
-    user
+    user,
+    posts,
 }: ProfileTabsProps) => {
     return (
-        <Tabs defaultValue="home" className="mt-8 w-full">
+        <Tabs
+            defaultValue="home"
+            className="mt-8 w-full"
+        >
             <TabsList className="h-auto rounded-none border-b bg-transparent p-0">
 
                 <TabsTrigger
@@ -40,20 +46,23 @@ const ProfileTabs = ({
                         Saved
                     </TabsTrigger>
                 )}
+
             </TabsList>
 
+            {/* HOME */}
             <TabsContent value="home">
-                {/* পরে ProfilePosts বসাবে */}
+                <ProfilePosts posts={posts} />
             </TabsContent>
 
+            {/* ABOUT */}
             <TabsContent value="about">
-                <About
-                    user={user} />
+                <About user={user} />
             </TabsContent>
 
+            {/* SAVED */}
             {isOwnProfile && (
                 <TabsContent value="saved">
-                    {/* পরে SavedPosts বসাবে */}
+                    {/* SavedPosts */}
                 </TabsContent>
             )}
         </Tabs>
