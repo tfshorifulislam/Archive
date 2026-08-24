@@ -1,38 +1,43 @@
 import type { Metadata } from "next";
-import { Playfair } from "next/font/google";
+import { Inter, Merriweather } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 
+const inter = Inter({
+    variable: "--font-inter",
+    subsets: ["latin"],
+    display: "swap",
+});
 
-const playfair = Playfair({
-  weight: ['400', '500', '600', '700', '800', '900'],
-  variable: '--font-playfair',
-  subsets: ['latin']
-})
+const merriweather = Merriweather({
+    variable: "--font-merriweather",
+    subsets: ["latin"],
+    weight: ["400", "700", "900"],
+    display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Archive",
-  description: "Next Level blog platform",
+    title: "Archive",
+    description: "Next Level blog platform",
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: LayoutProps<"/">) {
-  return (
-    <html
-      lang="en"
-      className={`${playfair.className} h-full antialiased`}
-    >
-      <body className="min-h-full w-full flex flex-col">
+    return (
+        <html
+            lang="en"
+            className={`${inter.className} ${merriweather.className} antialiased`}
+        >
+            <body className="min-h-screen w-full bg-background font-sans">
+                <main className="w-full">
+                    <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
+                        {children}
+                    </div>
+                </main>
 
-        <main className="w-full flex-1">
-          <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
-            {children}
-          </div>
-        </main>
-
-        <Toaster />
-      </body>
-    </html>
-  );
+                <Toaster />
+            </body>
+        </html>
+    );
 }
