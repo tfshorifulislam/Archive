@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Bookmark, MoreHorizontal } from "lucide-react";
+import { ArrowLeft, } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import parse from "html-react-parser";
 
 import { getPostById } from "@/services/get.post_By_Id";
 import { AvatarWithBadge } from "@/components/Shared/Avatar";
-import { Button } from "@/components/ui/button";
 
 interface PostDetailsPageProps {
     params: Promise<{
@@ -41,24 +41,6 @@ const PostDetailsPage = async ({ params }: PostDetailsPageProps) => {
                         Back
                     </Link>
 
-                    <div className="flex items-center gap-1">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-9 w-9 rounded-full"
-                        >
-                            <Bookmark className="h-4 w-4" />
-                        </Button>
-
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-9 w-9 rounded-full"
-                        >
-                            <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                    </div>
-
                 </div>
             </div>
 
@@ -66,18 +48,12 @@ const PostDetailsPage = async ({ params }: PostDetailsPageProps) => {
             <article className="mx-auto w-full max-w-4xl px-4 sm:px-6">
 
                 {/* Header */}
-                <header className="mx-auto max-w-3xl pt-12 pb-10 sm:pt-16 sm:pb-12">
+                <header className="mx-auto pt-12 pb-10 sm:pt-16 sm:pb-12">
 
                     {/* Title */}
                     <h1 className="text-[38px] font-semibold leading-[1.12] tracking-[-0.02em] sm:text-[48px] lg:text-[56px]">
                         {post.title || "Untitled post"}
                     </h1>
-
-                    {/* Subtitle */}
-                    <p className="mt-5 text-lg leading-8 text-muted-foreground sm:text-xl">
-                        {post.content.slice(0, 180)}
-                        {post.content.length > 180 && "..."}
-                    </p>
 
                     {/* Author */}
                     <div className="mt-7">
@@ -132,10 +108,10 @@ const PostDetailsPage = async ({ params }: PostDetailsPageProps) => {
 
 
                 {/* Content */}
-                <div className="mx-auto max-w-170">
+                <div className="mx-auto ">
 
                     <div className="whitespace-pre-wrap text-[18px] leading-[1.8] text-foreground/90 sm:text-[19px] sm:leading-[1.85]">
-                        {post.content}
+                        {parse(post.content)}
                     </div>
 
                     {/* Author Footer */}
