@@ -46,7 +46,7 @@ export function SiteHeader() {
 
         <Breadcrumb className="hidden sm:block">
           <h1 className="text-2xl font-black">
-            Archive
+            StoryHub
           </h1>
         </Breadcrumb>
 

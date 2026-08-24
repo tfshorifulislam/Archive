@@ -52,7 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <PenLine className="size-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <h1 className="text-sm font-semibold tracking-tight text-foreground">Archive</h1>
+            <h1 className="text-sm font-semibold tracking-tight text-foreground">StoryHub</h1>
             <p className="text-xs text-muted-foreground truncate">Ideas worth sharing</p>
           </div>
         </Link>

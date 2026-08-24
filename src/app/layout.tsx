@@ -17,7 +17,7 @@ const merriweather = Merriweather({
 });
 
 export const metadata: Metadata = {
-    title: "Archive",
+    title: "StoryHub",
     description: "Next Level blog platform",
 };
 
