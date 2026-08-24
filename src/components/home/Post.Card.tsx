@@ -1,8 +1,13 @@
 import Link from "next/link";
-import { MessageCircle, Heart, Bookmark, MoreHorizontal } from "lucide-react";
+import {
+    MessageCircle,
+    Heart,
+    Bookmark,
+    MoreHorizontal,
+} from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 import { Post } from "../../../types/createPost";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { AvatarWithBadge } from "../Shared/Avatar";
 
@@ -11,12 +16,10 @@ interface PostCardProps {
 }
 
 const PostCard = ({ post }: PostCardProps) => {
-    const formattedDate = new Date(post.createdAt).toLocaleDateString(
-        "en-US",
+    const formattedDate = formatDistanceToNow(
+        new Date(post.createdAt),
         {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
+            addSuffix: true,
         }
     );
 
@@ -35,9 +38,7 @@ const PostCard = ({ post }: PostCardProps) => {
                         href={`/profile/${post.user.userName}`}
                         className="flex items-center gap-3"
                     >
-                        <AvatarWithBadge
-                            user={post.user}
-                        />
+                        <AvatarWithBadge user={post.user} />
 
                         <div className="leading-tight">
                             <p className="text-sm font-semibold">
@@ -90,7 +91,6 @@ const PostCard = ({ post }: PostCardProps) => {
                 {/* Footer */}
                 <div className="mt-6 flex items-center justify-between border-t pt-4">
                     <div className="flex items-center gap-1">
-
                         <Button
                             type="button"
                             variant="ghost"
@@ -110,7 +110,6 @@ const PostCard = ({ post }: PostCardProps) => {
                             <MessageCircle className="h-4 w-4" />
                             <span className="text-xs">Comment</span>
                         </Button>
-
                     </div>
 
                     <Button
