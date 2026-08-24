@@ -3,8 +3,6 @@
 import * as React from "react"
 
 import { NavMain } from "@/components/SideBar/nav-main"
-import { NavProjects } from "@/components/SideBar/nav-projects"
-import { NavSecondary } from "@/components/SideBar/nav-secondary"
 import { NavUser } from "@/components/SideBar/nav-user"
 import {
   Sidebar,

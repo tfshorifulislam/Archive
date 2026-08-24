@@ -1,12 +1,16 @@
-"use client";
+'use client';
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, User, PlusSquare, Settings2 } from "lucide-react";
+import { useSession } from "@/lib/auth-client";
 
-const MobileBottomNav = ({ user }: { user?: { userName?: string } }) => {
+const MobileBottomNav = () => {
+
+    const { data: session } = useSession();
+    const userName = session?.user?.userName;
+
     const pathname = usePathname();
-
     const items = [
         {
             title: "Home",
@@ -15,7 +19,7 @@ const MobileBottomNav = ({ user }: { user?: { userName?: string } }) => {
         },
         {
             title: "Profile",
-            url: `/profile/${user?.userName}`,
+            url: `/profile/${userName}`,
             icon: User,
         },
         {
@@ -41,16 +45,14 @@ const MobileBottomNav = ({ user }: { user?: { userName?: string } }) => {
                         <Link
                             key={item.title}
                             href={item.url}
-                            className={`flex h-full w-20 flex-col items-center justify-center gap-1 text-xs font-medium transition-colors ${
-                                active
+                            className={`flex h-full w-20 flex-col items-center justify-center gap-1 text-xs font-medium transition-colors ${active
                                     ? "text-primary"
                                     : "text-muted-foreground hover:text-foreground"
-                            }`}
+                                }`}
                         >
                             <Icon
-                                className={`h-5 w-5 ${
-                                    active ? "stroke-[2.5]" : ""
-                                }`}
+                                className={`h-5 w-5 ${active ? "stroke-[2.5]" : ""
+                                    }`}
                             />
 
                             <span>{item.title}</span>
