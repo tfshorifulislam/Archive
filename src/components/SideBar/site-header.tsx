@@ -51,7 +51,7 @@ export function SiteHeader() {
         </Breadcrumb>
 
 
-        <div className="ml-4">
+        <div className="ml-4 hidden md:block">
           <SearchForm className="w-full sm:w-auto" />
         </div>
 
@@ -61,7 +61,8 @@ export function SiteHeader() {
             user ?
               <div className="flex justify-between items-center space-x-5">
 
-                <Link href='/create-post'>
+                <Link href='/create-post'
+                className="hidden md:block">
                   <div className="flex space-x-2 items-center justify-between">
                     <SquarePen />
                     <p>Write</p>
