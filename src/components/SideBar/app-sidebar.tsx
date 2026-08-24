@@ -15,7 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, LifeBuoyIcon, SendIcon, FrameIcon, PieChartIcon, MapIcon, TerminalIcon, SquarePlus, UserShield } from "lucide-react"
+import { TerminalSquareIcon, Settings2Icon, LifeBuoyIcon, SendIcon, FrameIcon, PieChartIcon, MapIcon, TerminalIcon, SquarePlus, UserShield } from "lucide-react"
 import { useSession } from "@/lib/auth-client"
 import Link from "next/link"
 

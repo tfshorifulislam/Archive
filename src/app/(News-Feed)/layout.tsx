@@ -1,6 +1,7 @@
 import AboutSpace from "@/components/RightSideBar.tsx/AboutSpace";
 import PlatformNote from "@/components/RightSideBar.tsx/PlatformNote";
 import RecommendedTopics from "@/components/RightSideBar.tsx/RecommendedTopics";
+import MobileBottomNav from "@/components/Shared/BottmNavBar";
 import { AppSidebar } from "@/components/SideBar/app-sidebar";
 import { SiteHeader } from "@/components/SideBar/site-header";
 import {
@@ -31,6 +32,9 @@ export default function NewsFeedLayout({
               {children}
             </main>
           </SidebarInset>
+
+          {/* bottm navbar */}
+          <MobileBottomNav />
 
           {/* Right Sidebar */}
           <aside className="hidden w-90 shrink-0 border-l lg:block">
