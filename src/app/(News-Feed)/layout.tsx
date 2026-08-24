@@ -30,7 +30,7 @@ export default function NewsFeedLayout({
       </SidebarInset>
 
       {/* Right Sidebar */}
-      <aside className="hidden w-75 shrink-0 border-l lg:block">
+      <aside className="hidden w-90 shrink-0 border-l lg:block">
         <div className="sticky top-14 p-4">
           {/* Right sidebar content */}
         </div>

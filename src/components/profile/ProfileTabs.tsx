@@ -12,11 +12,7 @@ import { ProfileTabsProps } from "../../../types/userProfileTypes";
 import About from "./About";
 import ProfilePosts from "./ProfilePosts";
 
-const ProfileTabs = ({
-    isOwnProfile,
-    user,
-    posts,
-}: ProfileTabsProps) => {
+const ProfileTabs = ({isOwnProfile, user, posts, }: ProfileTabsProps) => {
     return (
         <Tabs
             defaultValue="home"
