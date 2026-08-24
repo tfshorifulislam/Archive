@@ -33,5 +33,5 @@ export interface GetAllPostsResponse {
 export type CreatePostFormData = {
     title: string;
     content: string;
-    file: FileList;
+    // file: FileList;
 };
