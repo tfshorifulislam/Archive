@@ -15,17 +15,13 @@ export const toggleSavePost = async (postId: string) => {
 
     const data = await res.json();
 
-    if (res.status === 401) {
+    if (!res.ok) {
         return {
             success: false,
-            unauthorized: true,
+            saved: false,
+            unauthorized: res.status === 401,
+            message: data.message,
         };
-    }
-
-    if (!res.ok) {
-        throw new Error(
-            data.message || "Failed to toggle saved post"
-        );
     }
 
     return data;

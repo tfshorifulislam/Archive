@@ -1,22 +1,48 @@
 "use client";
 
-import { useState } from "react";
-import {Bookmark, Heart, MessageCircle, } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+    Bookmark,
+    Heart,
+    MessageCircle,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "../ui/button";
+import { checkSavedPost } from "@/services/check-save-post";
 import { toggleSavePost } from "@/services/toggle-save";
-import { useRouter } from "next/navigation";
+
 
 interface PostCardFooterProps {
     postId: string;
-    saved: boolean;
 }
 
-const PostCardFooter = ({ postId, saved, }: PostCardFooterProps) => {
-    const [isSaved, setIsSaved] = useState(saved);
+const PostCardFooter = ({
+    postId,
+}: PostCardFooterProps) => {
+    const router = useRouter();
+
+    const [isSaved, setIsSaved] = useState(false);
     const [loading, setLoading] = useState(false);
 
-      const router = useRouter();
+    useEffect(() => {
+        const checkSaveStatus = async () => {
+            try {
+                const data = await checkSavedPost(postId);
+
+                if (data.success) {
+                    setIsSaved(data.saved);
+                }
+            } catch (error) {
+                console.error(
+                    "Check save status error:",
+                    error
+                );
+            }
+        };
+
+        checkSaveStatus();
+    }, [postId]);
 
     const handleSave = async () => {
         if (loading) return;
@@ -26,7 +52,8 @@ const PostCardFooter = ({ postId, saved, }: PostCardFooterProps) => {
 
             const data = await toggleSavePost(postId);
 
-             if (data.unauthorized) {
+            // Not logged in
+            if (data.unauthorized) {
                 router.push("/auth/login");
                 return;
             }
@@ -35,7 +62,10 @@ const PostCardFooter = ({ postId, saved, }: PostCardFooterProps) => {
                 setIsSaved(data.saved);
             }
         } catch (error) {
-            console.error("Save post error:", error);
+            console.error(
+                "Save post error:",
+                error
+            );
         } finally {
             setLoading(false);
         }
@@ -43,9 +73,7 @@ const PostCardFooter = ({ postId, saved, }: PostCardFooterProps) => {
 
     return (
         <div className="mt-7 flex items-center justify-between">
-            
             <div className="flex items-center gap-1">
-
                 {/* Like */}
                 <Button
                     type="button"

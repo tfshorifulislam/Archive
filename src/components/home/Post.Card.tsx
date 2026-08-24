@@ -8,13 +8,12 @@ import { Post } from "../../../types/createPost";
 import { Button } from "@/components/ui/button";
 import { AvatarWithBadge } from "../Shared/Avatar";
 import PostCardFooter from "./Post.Card.Footer";
-import { checkSavedPost } from "@/services/check-save-post";
 
 interface PostCardProps {
     post: Post;
 }
 
-const PostCard = async ({ post }: PostCardProps) => {
+const PostCard = ({ post }: PostCardProps) => {
     const formattedDate = formatDistanceToNow(
         new Date(post.createdAt),
         {
@@ -22,11 +21,9 @@ const PostCard = async ({ post }: PostCardProps) => {
         }
     );
 
-    const savedData = await checkSavedPost(post.id);
-
     return (
         <article className="group border-b bg-background py-8 sm:py-10">
-            
+
             {/* Author */}
             <div className="flex items-center justify-between">
                 <Link
@@ -56,7 +53,7 @@ const PostCard = async ({ post }: PostCardProps) => {
                 </Button>
             </div>
 
-            {/* Post */}
+            {/* Post Content */}
             <div className="mt-7 flex gap-6 sm:mt-8 sm:gap-8">
 
                 {/* Text */}
@@ -80,6 +77,7 @@ const PostCard = async ({ post }: PostCardProps) => {
                         </Link>
                     </div>
 
+                    {/* Reading time + first tag */}
                     <div className="mt-5 flex flex-wrap items-center gap-2.5 text-xs text-muted-foreground sm:text-sm">
                         <span>5 min read</span>
 
@@ -93,7 +91,7 @@ const PostCard = async ({ post }: PostCardProps) => {
                     </div>
                 </div>
 
-                {/* Image */}
+                {/* Post Image */}
                 {post.mediaUrl &&
                     post.mediaType === "image" && (
                         <Link
@@ -102,7 +100,10 @@ const PostCard = async ({ post }: PostCardProps) => {
                         >
                             <Image
                                 src={post.mediaUrl}
-                                alt={post.title || "Post image"}
+                                alt={
+                                    post.title ||
+                                    "Post image"
+                                }
                                 fill
                                 sizes="(max-width: 640px) 176px, (max-width: 768px) 224px, 256px"
                                 className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
@@ -126,10 +127,7 @@ const PostCard = async ({ post }: PostCardProps) => {
             )}
 
             {/* Footer */}
-            <PostCardFooter
-                postId={post.id}
-                saved={savedData.saved}
-            />
+            <PostCardFooter postId={post.id} />
         </article>
     );
 };
