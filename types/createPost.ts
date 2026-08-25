@@ -18,6 +18,14 @@ export interface Post {
     user: PostUser;
 }
 
+export interface SavedPost {
+    id: string;
+    userId: string;
+    postId: string;
+    createdAt: string;
+    post: Post;
+}
+
 export interface CreatePostResponse {
     success: boolean;
     message: string;
@@ -30,8 +38,13 @@ export interface GetAllPostsResponse {
     posts: Post[];
 }
 
+export interface GetSavedPostsResponse {
+    success: boolean;
+    savedPosts: SavedPost[];
+    message: string;
+}
+
 export type CreatePostFormData = {
     title: string;
     content: string;
-    // file: FileList;
 };

@@ -7,8 +7,9 @@ import { ProfileUser } from "../../../../../types/userProfileTypes";
 import ProfileHeader from "@/components/profile/Header";
 import ProfileTabs from "@/components/profile/ProfileTabs";
 import { getUserPosts } from "@/services/ge_tUser_Profile_Posts";
+import { getSavedPosts } from "@/services/getSavePost";
 
-export default async function ProfilePage({params,}: ProfileUser) {
+export default async function ProfilePage({ params, }: ProfileUser) {
     const { userName } = await params;
 
     let profile;
@@ -22,6 +23,8 @@ export default async function ProfilePage({params,}: ProfileUser) {
     const { user, isOwnProfile } = profile;
 
     const postsData = await getUserPosts(userName);
+    const savePost = await getSavedPosts();
+    const allSavePost = savePost?.savedPosts
 
     return (
         <main className="mx-auto min-h-screen w-full">
@@ -34,6 +37,7 @@ export default async function ProfilePage({params,}: ProfileUser) {
                 user={user}
                 isOwnProfile={isOwnProfile}
                 posts={postsData.posts}
+                allSavePost={allSavePost}
             />
         </main>
     );

@@ -11,8 +11,9 @@ import { ProfileTabsProps } from "../../../types/userProfileTypes";
 
 import About from "./About";
 import ProfilePosts from "./ProfilePosts";
+import SavedPosts from "../home/SavedPosts";
 
-const ProfileTabs = ({isOwnProfile, user, posts, }: ProfileTabsProps) => {
+const ProfileTabs = ({ isOwnProfile, user, posts, allSavePost }: ProfileTabsProps) => {
     return (
         <Tabs
             defaultValue="home"
@@ -58,7 +59,7 @@ const ProfileTabs = ({isOwnProfile, user, posts, }: ProfileTabsProps) => {
             {/* SAVED */}
             {isOwnProfile && (
                 <TabsContent value="saved">
-                    {/* SavedPosts */}
+                    <SavedPosts allSavePost={allSavePost} />
                 </TabsContent>
             )}
         </Tabs>

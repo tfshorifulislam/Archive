@@ -1,4 +1,4 @@
-import { Post } from "./createPost";
+import { Post, SavedPost } from "./createPost";
 
 export type ProfileUser = {
     id: string;
@@ -26,9 +26,10 @@ export interface ProfileHeaderProps {
 export interface ProfileTabsProps {
     user: ProfileUser;
     isOwnProfile: boolean;
-     posts: Post[];
+    posts: Post[];
+    allSavePost: SavedPost[];
 }
 
 export interface AboutProps {
-  user: ProfileUser;
+    user: ProfileUser;
 }
