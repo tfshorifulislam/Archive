@@ -1,9 +1,5 @@
-import { notFound } from "next/navigation";
-
 import { getUserProfile } from "@/services/getUserProfile";
-
 import { ProfileUser } from "../../../../../types/userProfileTypes";
-
 import ProfileHeader from "@/components/profile/Header";
 import ProfileTabs from "@/components/profile/ProfileTabs";
 import { getUserPosts } from "@/services/ge_tUser_Profile_Posts";
@@ -11,16 +7,11 @@ import { getSavedPosts } from "@/services/getSavePost";
 
 export default async function ProfilePage({ params, }: ProfileUser) {
     const { userName } = await params;
-
-    let profile;
-
-    try {
-        profile = await getUserProfile(userName);
-    } catch {
-        notFound();
-    }
+  
+     const profile = await getUserProfile(userName);
 
     const { user, isOwnProfile } = profile;
+
 
     const postsData = await getUserPosts(userName);
     const savePost = await getSavedPosts();
