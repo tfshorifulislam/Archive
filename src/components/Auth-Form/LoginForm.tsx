@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { SignupFormData } from "../../../types/SignupFormData"
-import { signIn } from "@/lib/auth-client"
+import { signIn, useSession } from "@/lib/auth-client"
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -23,6 +23,10 @@ export default function LoginForm({
 }: React.ComponentProps<"form">) {
 
   const router = useRouter()
+
+  const { data: session } = useSession();
+
+console.log(session);
 
   const { register, handleSubmit, } = useForm<SignupFormData>();
 
@@ -42,7 +46,9 @@ export default function LoginForm({
       }
 
       toast.success("Login successful!");
-      router.push('/')
+      router.push("/");
+      router.refresh();
+
     } catch (error) {
       console.error("LOGIN ERROR:", error);
       toast.error("Something went wrong. Please try again.");

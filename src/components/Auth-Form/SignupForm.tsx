@@ -70,7 +70,6 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
       userName: data.userName,
     });
 
-
     if (res.error) {
       console.log(res.error);
       toast.error(res.error.message);
