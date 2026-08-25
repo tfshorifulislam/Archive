@@ -7,10 +7,11 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
 
+  baseURL: process.env.FRONTEND_URL,
+
   emailAndPassword: {
     enabled: true,
   },
-
 
   user: {
     additionalFields: {
@@ -24,6 +25,6 @@ export const auth = betterAuth({
   },
 
   trustedOrigins: [
-    process.env.NEXT_PUBLIC_BACKEND_URL!,
+    process.env.FRONTEND_URL!,
   ],
 });
