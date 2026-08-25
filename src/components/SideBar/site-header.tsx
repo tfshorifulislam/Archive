@@ -45,9 +45,9 @@ export function SiteHeader() {
 
 
         <Breadcrumb className="hidden sm:block">
-          <h1 className="text-2xl font-black">
+          <Link href='/' className="text-2xl font-black">
             StoryHub
-          </h1>
+          </Link>
         </Breadcrumb>
 
 

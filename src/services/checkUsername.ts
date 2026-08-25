@@ -5,8 +5,7 @@ export const checkUsername = async (userName: string) => {
         throw new Error("Backend URL is not configured");
     }
 
-    const res = await fetch(
-        `${baseUrl}/api/user/check-ussername?userName=${encodeURIComponent(userName)}`
+    const res = await fetch(`${baseUrl}/api/user/check-ussername?userName=${encodeURIComponent(userName)}`
     );
 
     if (!res.ok) {
