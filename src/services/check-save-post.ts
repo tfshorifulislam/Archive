@@ -1,7 +1,8 @@
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export const checkSavedPost = async (
-    postId: string
+    postId: string,
+    userId?: string
 ) => {
     if (!baseUrl) {
         throw new Error(
@@ -9,8 +10,19 @@ export const checkSavedPost = async (
         );
     }
 
+    const url = new URL(
+        `${baseUrl}/api/toggle-save/check/${postId}`
+    );
+
+    if (userId) {
+        url.searchParams.set(
+            "userId",
+            userId
+        );
+    }
+
     const response = await fetch(
-        `${baseUrl}/api/toggle-save/check/${postId}`,
+        url.toString(),
         {
             method: "GET",
             credentials: "include",
@@ -24,8 +36,6 @@ export const checkSavedPost = async (
         return {
             success: false,
             saved: false,
-            unauthorized:
-                response.status === 401,
             message: data.message,
         };
     }

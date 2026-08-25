@@ -7,6 +7,7 @@ import {
     MessageCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
 
 import { Button } from "../ui/button";
 import { checkSavedPost } from "@/services/check-save-post";
@@ -21,60 +22,68 @@ const PostCardFooter = ({
 }: PostCardFooterProps) => {
     const router = useRouter();
 
-    const [isSaved, setIsSaved] =
-        useState(false);
+    const {
+        data: session,
+        isPending,
+    } = useSession();
 
-    const [loading, setLoading] =
-        useState(false);
+    const [isSaved, setIsSaved] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        let cancelled = false;
+        if (isPending) {
+            return;
+        }
 
         const checkSaveStatus = async () => {
             try {
-                const data =
-                    await checkSavedPost(postId);
+                const data = await checkSavedPost(
+                    postId,
+                    session?.user?.id
+                );
 
-                if (
-                    !cancelled &&
-                    data.success
-                ) {
+                if (data.success) {
                     setIsSaved(data.saved);
                 }
             } catch (error) {
                 console.error(
-                    "CHECK SAVE STATUS ERROR:",
+                    "Check save status error:",
                     error
                 );
             }
         };
 
         checkSaveStatus();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [postId]);
+    }, [
+        postId,
+        session?.user?.id,
+        isPending,
+    ]);
 
     const handleSave = async () => {
         if (loading) {
             return;
         }
 
+        if (!session?.user?.id) {
+            router.push("/auth/login");
+            return;
+        }
+
         try {
             setLoading(true);
 
-            const data =
-                await toggleSavePost(postId);
+            const data = await toggleSavePost(
+                postId,
+                session.user.id
+            );
 
-            if (data.unauthorized) {
-                router.push("/auth/login");
+            if (!data.success) {
+                console.error(data.message);
                 return;
             }
 
-            if (data.success) {
-                setIsSaved(data.saved);
-            }
+            setIsSaved(data.saved);
         } catch (error) {
             console.error(
                 "SAVE POST ERROR:",
@@ -87,9 +96,7 @@ const PostCardFooter = ({
 
     return (
         <div className="mt-7 flex items-center justify-between">
-
             <div className="flex items-center gap-1">
-
                 <Button
                     type="button"
                     variant="ghost"
@@ -115,7 +122,6 @@ const PostCardFooter = ({
                         Comment
                     </span>
                 </Button>
-
             </div>
 
             <Button
@@ -123,7 +129,9 @@ const PostCardFooter = ({
                 variant="ghost"
                 size="icon"
                 onClick={handleSave}
-                disabled={loading}
+                disabled={
+                    loading || isPending
+                }
                 className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground"
             >
                 <Bookmark
@@ -134,7 +142,6 @@ const PostCardFooter = ({
                     }`}
                 />
             </Button>
-
         </div>
     );
 };
