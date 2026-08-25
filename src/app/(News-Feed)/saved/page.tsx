@@ -1,74 +1,89 @@
-import { getSavedPosts } from "@/services/getSavePost";
-import PostCard from "@/components/home/Post.Card";
+"use client";
 
-const SavedPost = async () => {
-    const savePost = await getSavedPosts();
-    const allSavePost = savePost.savedPosts;
+import { useEffect, useState } from "react";
+import { useSession } from "@/lib/auth-client";
+import { getSavedPosts } from "@/services/getSavePost";
+import SavedPosts from "@/components/home/SavedPosts";
+import { SavedPost } from "../../../../types/createPost";
+
+export default function SavedPage() {
+    const { data: session, isPending } = useSession();
+
+    const [savedPosts, setSavedPosts] = useState<SavedPost[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (isPending || !session?.user?.id) {
+            return;
+        }
+
+        let cancelled = false;
+
+        const fetchSavedPosts = async () => {
+            try {
+                const data = await getSavedPosts(session.user.id);
+
+                if (!cancelled) {
+                    setSavedPosts(data.savedPosts ?? []);
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.error("GET SAVED POSTS ERROR:", error);
+
+                if (!cancelled) {
+                    setError("Failed to load saved posts");
+                    setLoading(false);
+                }
+            }
+        };
+
+        fetchSavedPosts();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [session?.user?.id, isPending]);
+
+    if (isPending) {
+        return (
+            <main className="mx-auto min-h-screen w-full p-6">
+                Loading...
+            </main>
+        );
+    }
+
+    if (!session?.user?.id) {
+        return (
+            <main className="mx-auto min-h-screen w-full p-6">
+                <div className="text-center">
+                    Please login to view your saved posts.
+                </div>
+            </main>
+        );
+    }
+
+    if (loading) {
+        return (
+            <main className="mx-auto min-h-screen w-full p-6">
+                Loading saved posts...
+            </main>
+        );
+    }
+
+    if (error) {
+        return (
+            <main className="mx-auto min-h-screen w-full p-6">
+                <div className="text-center text-destructive">
+                    {error}
+                </div>
+            </main>
+        );
+    }
 
     return (
-        <main className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-
-            {/* Header */}
-            <div className="mb-8">
-                <div className="flex items-end justify-between gap-4">
-                    <div>
-                        <h1 className="text-2xl font-bold tracking-tight">
-                            Saved Posts
-                        </h1>
-
-                        <p className="mt-1 text-sm text-muted-foreground">
-                            Posts you saved for later.
-                        </p>
-                    </div>
-
-                    <div className="rounded-full border bg-muted/50 px-3 py-1 text-sm font-medium">
-                        {allSavePost.length}{" "}
-                        {allSavePost.length === 1 ? "post" : "posts"}
-                    </div>
-                </div>
-            </div>
-
-            {/* Saved Posts */}
-            {allSavePost.length > 0 ? (
-                <div className="space-y-4">
-                    {allSavePost.map((savedPost) => (
-                        <PostCard
-                            key={savedPost.id}
-                            post={savedPost.post}
-                        />
-                    ))}
-                </div>
-            ) : (
-                <div className="flex min-h-100 flex-col items-center justify-center rounded-2xl border border-dashed px-6 text-center">
-                    <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-muted">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.8"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="text-muted-foreground"
-                        >
-                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                        </svg>
-                    </div>
-
-                    <h2 className="text-lg font-semibold">
-                        No saved posts yet
-                    </h2>
-
-                    <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-                        When you save a post, it will appear here so you can
-                        easily find it later.
-                    </p>
-                </div>
-            )}
+        <main className="mx-auto min-h-screen w-full">
+            <SavedPosts allSavePost={savedPosts} />
         </main>
     );
-};
-
-export default SavedPost;
+}
