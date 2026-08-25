@@ -13,22 +13,22 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { AboutProps } from "../../../types/userProfileTypes";
 import { updateProfile } from "@/services/updateProfile";
-import { useRouter } from "next/navigation";
 import { checkUsername } from "@/services/checkUsername";
 
+import { useRouter } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
 
 type FormData = {
     name: string;
     userName: string;
 };
-
-const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export function EditProfileDialog({ user }: AboutProps) {
     const [loading, setLoading] = useState(false);
@@ -36,6 +36,8 @@ export function EditProfileDialog({ user }: AboutProps) {
     const [userNameAvailable, setUserNameAvailable] = useState(true);
 
     const router = useRouter();
+
+    const { data: session } = useSession();
 
     const {
         register,
@@ -52,7 +54,6 @@ export function EditProfileDialog({ user }: AboutProps) {
     const userName = watch("userName");
 
     useEffect(() => {
-
         if (userName === user.userName) {
             setUserNameMessage("");
             setUserNameAvailable(true);
@@ -67,13 +68,12 @@ export function EditProfileDialog({ user }: AboutProps) {
 
         const timer = setTimeout(async () => {
             try {
-                
                 const data = await checkUsername(userName);
 
                 setUserNameMessage(data.message);
                 setUserNameAvailable(data.available);
             } catch (error) {
-                console.error(error);
+                console.error("USERNAME CHECK ERROR:", error);
 
                 setUserNameMessage("Unable to check username");
                 setUserNameAvailable(false);
@@ -83,25 +83,33 @@ export function EditProfileDialog({ user }: AboutProps) {
         return () => clearTimeout(timer);
     }, [userName, user.userName]);
 
-  const onSubmit = async (data: FormData) => {
-    if (!userNameAvailable) {
-        return;
-    }
+    const onSubmit = async (data: FormData) => {
+        if (!userNameAvailable) {
+            return;
+        }
 
-    try {
-        setLoading(true);
+        if (!session?.user?.id) {
+            console.error("User session not found");
+            return;
+        }
 
-        await updateProfile(data);
+        try {
+            setLoading(true);
 
-        router.replace(`/profile/${data.userName}`);
-        router.refresh();
+            await updateProfile({
+                name: data.name,
+                userName: data.userName,
+                userId: session.user.id,
+            });
 
-    } catch (error) {
-        console.error(error);
-    } finally {
-        setLoading(false);
-    }
-};
+            router.replace(`/profile/${data.userName}`);
+            router.refresh();
+        } catch (error) {
+            console.error("UPDATE PROFILE ERROR:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <Dialog>
@@ -118,7 +126,6 @@ export function EditProfileDialog({ user }: AboutProps) {
                     </DialogHeader>
 
                     <FieldGroup className="py-4">
-                        {/* Name */}
                         <Field>
                             <Label htmlFor="name">
                                 Name
@@ -130,7 +137,8 @@ export function EditProfileDialog({ user }: AboutProps) {
                                     required: "Name is required",
                                     minLength: {
                                         value: 2,
-                                        message: "Name must be at least 2 characters",
+                                        message:
+                                            "Name must be at least 2 characters",
                                     },
                                 })}
                             />
@@ -142,7 +150,6 @@ export function EditProfileDialog({ user }: AboutProps) {
                             )}
                         </Field>
 
-                        {/* Username */}
                         <Field>
                             <Label htmlFor="userName">
                                 Username
@@ -168,10 +175,11 @@ export function EditProfileDialog({ user }: AboutProps) {
 
                             {!errors.userName && userNameMessage && (
                                 <p
-                                    className={`text-sm ${userNameAvailable
-                                        ? "text-green-600"
-                                        : "text-destructive"
-                                        }`}
+                                    className={`text-sm ${
+                                        userNameAvailable
+                                            ? "text-green-600"
+                                            : "text-destructive"
+                                    }`}
                                 >
                                     {userNameMessage}
                                 </p>
@@ -183,7 +191,6 @@ export function EditProfileDialog({ user }: AboutProps) {
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => { }}
                         >
                             Cancel
                         </Button>
@@ -196,9 +203,7 @@ export function EditProfileDialog({ user }: AboutProps) {
                                     userName !== user.userName)
                             }
                         >
-                            {loading
-                                ? "Saving..."
-                                : "Save Changes"}
+                            {loading ? "Saving..." : "Save Changes"}
                         </Button>
                     </DialogFooter>
                 </form>

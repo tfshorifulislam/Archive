@@ -11,6 +11,18 @@ export const auth = betterAuth({
     enabled: true,
   },
 
+
+  user: {
+    additionalFields: {
+      userName: {
+        type: "string",
+        required: true,
+        input: true,
+        returned: true,
+      },
+    },
+  },
+
   trustedOrigins: [
     process.env.NEXT_PUBLIC_APP_URL!,
   ],
