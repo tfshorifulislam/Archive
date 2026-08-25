@@ -11,7 +11,9 @@ export const searchPosts = async (
     }
 
     const response = await fetch(
-        `${baseUrl}/api/posts/search?search=${encodeURIComponent(search)}`,
+        `${baseUrl}/api/posts/search?search=${encodeURIComponent(
+            search
+        )}`,
         {
             method: "GET",
             cache: "no-store",
