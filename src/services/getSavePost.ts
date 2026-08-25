@@ -1,6 +1,8 @@
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export const getSavedPosts = async () => {
+export const getSavedPosts = async (
+    userId: string
+) => {
     if (!baseUrl) {
         throw new Error(
             "Backend URL is not configured"
@@ -8,9 +10,12 @@ export const getSavedPosts = async () => {
     }
 
     const response = await fetch(
-        `${baseUrl}/api/saved-posts`,
+        `${baseUrl}/api/saved-posts?userId=${userId}`,
         {
             method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
             credentials: "include",
             cache: "no-store",
         }
