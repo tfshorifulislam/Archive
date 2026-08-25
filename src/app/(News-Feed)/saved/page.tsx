@@ -37,7 +37,7 @@ export default function SavedPage() {
                 setLoading(true);
                 setError(null);
 
-                const data = await getSavedPosts();
+                const data = await getSavedPosts(session?.user?.id);
 
                 if (cancelled) {
                     return;
