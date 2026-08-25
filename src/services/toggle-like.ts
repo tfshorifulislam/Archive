@@ -1,7 +1,9 @@
-const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const baseUrl =
+    process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export const toggleLikePost = async (
-    postId: string
+    postId: string,
+    userId: string
 ) => {
     if (!baseUrl) {
         throw new Error(
@@ -13,7 +15,13 @@ export const toggleLikePost = async (
         `${baseUrl}/api/toggle-like/${postId}`,
         {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
             credentials: "include",
+            body: JSON.stringify({
+                userId,
+            }),
         }
     );
 

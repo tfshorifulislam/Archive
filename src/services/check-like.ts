@@ -1,7 +1,9 @@
-const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const baseUrl =
+    process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export const checkLikePost = async (
-    postId: string
+    postId: string,
+    userId?: string
 ) => {
     if (!baseUrl) {
         throw new Error(
@@ -9,8 +11,19 @@ export const checkLikePost = async (
         );
     }
 
+    const url = new URL(
+        `${baseUrl}/api/toggle-like/check/${postId}`
+    );
+
+    if (userId) {
+        url.searchParams.set(
+            "userId",
+            userId
+        );
+    }
+
     const response = await fetch(
-        `${baseUrl}/api/toggle-like/check/${postId}`,
+        url.toString(),
         {
             method: "GET",
             credentials: "include",
@@ -25,6 +38,7 @@ export const checkLikePost = async (
             success: false,
             liked: false,
             likeCount: 0,
+            message: data.message,
         };
     }
 

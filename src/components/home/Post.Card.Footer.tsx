@@ -6,7 +6,6 @@ import {
     Heart,
     MessageCircle,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 import { Button } from "../ui/button";
 
@@ -16,6 +15,8 @@ import { toggleSavePost } from "@/services/toggle-save";
 import { checkLikePost } from "@/services/check-like";
 import { toggleLikePost } from "@/services/toggle-like";
 
+import { useSession } from "@/lib/auth-client";
+
 interface PostCardFooterProps {
     postId: string;
 }
@@ -23,31 +24,57 @@ interface PostCardFooterProps {
 const PostCardFooter = ({
     postId,
 }: PostCardFooterProps) => {
-    const router = useRouter();
+    const { data: session } = useSession();
 
-    const [isSaved, setIsSaved] = useState(false);
-    const [isLiked, setIsLiked] = useState(false);
+    const userId = session?.user?.id;
 
-    const [likeCount, setLikeCount] = useState(0);
+    const [isSaved, setIsSaved] =
+        useState(false);
 
-    const [saveLoading, setSaveLoading] = useState(false);
-    const [likeLoading, setLikeLoading] = useState(false);
+    const [isLiked, setIsLiked] =
+        useState(false);
+
+    const [likeCount, setLikeCount] =
+        useState(0);
+
+    const [saveLoading, setSaveLoading] =
+        useState(false);
+
+    const [likeLoading, setLikeLoading] =
+        useState(false);
+
+    // --------------------------------
+    // Load Like + Save Status
+    // --------------------------------
 
     useEffect(() => {
         const loadStatus = async () => {
             try {
-                const [saveData, likeData] =
-                    await Promise.all([
-                        checkSavedPost(postId),
-                        checkLikePost(postId),
-                    ]);
+                const [
+                    saveData,
+                    likeData,
+                ] = await Promise.all([
+                    checkSavedPost(
+                        postId,
+                        userId
+                    ),
+                    checkLikePost(
+                        postId,
+                        userId
+                    ),
+                ]);
 
                 if (saveData.success) {
-                    setIsSaved(saveData.saved);
+                    setIsSaved(
+                        saveData.saved
+                    );
                 }
 
                 if (likeData.success) {
-                    setIsLiked(likeData.liked);
+                    setIsLiked(
+                        likeData.liked
+                    );
+
                     setLikeCount(
                         likeData.likeCount ?? 0
                     );
@@ -61,24 +88,37 @@ const PostCardFooter = ({
         };
 
         loadStatus();
-    }, [postId]);
+    }, [postId, userId]);
+
+    // --------------------------------
+    // Like
+    // --------------------------------
 
     const handleLike = async () => {
         if (likeLoading) return;
+
+        // User login না করলে
+        if (!userId) {
+            window.location.href =
+                "/auth/login";
+
+            return;
+        }
 
         try {
             setLikeLoading(true);
 
             const data =
-                await toggleLikePost(postId);
-
-            if (data.unauthorized) {
-                router.push("/auth/login");
-                return;
-            }
+                await toggleLikePost(
+                    postId,
+                    userId
+                );
 
             if (data.success) {
-                setIsLiked(data.liked);
+                setIsLiked(
+                    data.liked
+                );
+
                 setLikeCount(
                     data.likeCount ?? 0
                 );
@@ -93,22 +133,34 @@ const PostCardFooter = ({
         }
     };
 
+    // --------------------------------
+    // Save
+    // --------------------------------
+
     const handleSave = async () => {
         if (saveLoading) return;
+
+        // User login না করলে
+        if (!userId) {
+            window.location.href =
+                "/auth/login";
+
+            return;
+        }
 
         try {
             setSaveLoading(true);
 
             const data =
-                await toggleSavePost(postId);
-
-            if (data.unauthorized) {
-                router.push("/auth/login");
-                return;
-            }
+                await toggleSavePost(
+                    postId,
+                    userId
+                );
 
             if (data.success) {
-                setIsSaved(data.saved);
+                setIsSaved(
+                    data.saved
+                );
             }
         } catch (error) {
             console.error(
@@ -136,11 +188,10 @@ const PostCardFooter = ({
                     className="h-9 gap-2 rounded-full px-3 text-muted-foreground hover:text-foreground"
                 >
                     <Heart
-                        className={`h-4 w-4 transition-colors ${
-                            isLiked
-                                ? "fill-current text-red-500"
-                                : ""
-                        }`}
+                        className={`h-4 w-4 transition-colors ${isLiked
+                            ? "fill-current text-red-500"
+                            : ""
+                            }`}
                     />
 
                     <span className="text-xs sm:text-sm">
@@ -182,11 +233,10 @@ const PostCardFooter = ({
                 className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground"
             >
                 <Bookmark
-                    className={`h-4 w-4 transition-colors ${
-                        isSaved
-                            ? "fill-current text-primary"
-                            : ""
-                    }`}
+                    className={`h-4 w-4 transition-colors ${isSaved
+                        ? "fill-current text-primary"
+                        : ""
+                        }`}
                 />
             </Button>
 
