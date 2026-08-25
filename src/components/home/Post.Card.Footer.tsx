@@ -16,6 +16,7 @@ import { checkLikePost } from "@/services/check-like";
 import { toggleLikePost } from "@/services/toggle-like";
 
 import { useSession } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 interface PostCardFooterProps {
     postId: string;
@@ -28,24 +29,15 @@ const PostCardFooter = ({
 
     const userId = session?.user?.id;
 
-    const [isSaved, setIsSaved] =
-        useState(false);
+    const router = useRouter();
 
-    const [isLiked, setIsLiked] =
-        useState(false);
+    const [isSaved, setIsSaved] = useState(false);
+    const [isLiked, setIsLiked] = useState(false);
 
-    const [likeCount, setLikeCount] =
-        useState(0);
+    const [likeCount, setLikeCount] = useState(0);
 
-    const [saveLoading, setSaveLoading] =
-        useState(false);
-
-    const [likeLoading, setLikeLoading] =
-        useState(false);
-
-    // --------------------------------
-    // Load Like + Save Status
-    // --------------------------------
+    const [saveLoading, setSaveLoading] = useState(false);
+    const [likeLoading, setLikeLoading] = useState(false);
 
     useEffect(() => {
         const loadStatus = async () => {
@@ -90,18 +82,11 @@ const PostCardFooter = ({
         loadStatus();
     }, [postId, userId]);
 
-    // --------------------------------
-    // Like
-    // --------------------------------
-
     const handleLike = async () => {
         if (likeLoading) return;
 
-        // User login না করলে
         if (!userId) {
-            window.location.href =
-                "/auth/login";
-
+            router.push("/auth/login");
             return;
         }
 
@@ -133,18 +118,11 @@ const PostCardFooter = ({
         }
     };
 
-    // --------------------------------
-    // Save
-    // --------------------------------
-
     const handleSave = async () => {
         if (saveLoading) return;
 
-        // User login না করলে
         if (!userId) {
-            window.location.href =
-                "/auth/login";
-
+            router.push("/auth/login");
             return;
         }
 
@@ -188,10 +166,11 @@ const PostCardFooter = ({
                     className="h-9 gap-2 rounded-full px-3 text-muted-foreground hover:text-foreground"
                 >
                     <Heart
-                        className={`h-4 w-4 transition-colors ${isLiked
-                            ? "fill-current text-red-500"
-                            : ""
-                            }`}
+                        className={`h-4 w-4 transition-colors ${
+                            isLiked
+                                ? "fill-current text-red-500"
+                                : ""
+                        }`}
                     />
 
                     <span className="text-xs sm:text-sm">
@@ -233,10 +212,11 @@ const PostCardFooter = ({
                 className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground"
             >
                 <Bookmark
-                    className={`h-4 w-4 transition-colors ${isSaved
-                        ? "fill-current text-primary"
-                        : ""
-                        }`}
+                    className={`h-4 w-4 transition-colors ${
+                        isSaved
+                            ? "fill-current text-primary"
+                            : ""
+                    }`}
                 />
             </Button>
 
