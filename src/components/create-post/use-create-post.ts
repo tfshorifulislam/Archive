@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
 import { createPost } from "@/services/upload.media";
 import { CreatePostFormData } from "../../../types/createPost";
 
@@ -14,6 +15,8 @@ export const useCreatePost = () => {
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
+
+    const { data: session } = useSession();
 
     // -------------------------
     // Image
@@ -77,6 +80,11 @@ export const useCreatePost = () => {
     const submitPost = async (
         data: CreatePostFormData
     ) => {
+        if (!session?.user?.id) {
+            console.error("User session not found");
+            return;
+        }
+
         try {
             setLoading(true);
 
@@ -97,6 +105,11 @@ export const useCreatePost = () => {
                 JSON.stringify(tags)
             );
 
+            formData.append(
+                "userId",
+                session.user.id
+            );
+
             if (selectedFile) {
                 formData.append(
                     "file",
@@ -112,6 +125,8 @@ export const useCreatePost = () => {
             );
 
             router.push("/");
+            router.refresh();
+
         } catch (error) {
             console.error(
                 "CREATE POST ERROR:",
