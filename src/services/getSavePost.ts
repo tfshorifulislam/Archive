@@ -1,8 +1,14 @@
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export const getSavedPosts = async (userId: string) => {
+export const getSavedPosts = async () => {
+    if (!baseUrl) {
+        throw new Error(
+            "Backend URL is not configured"
+        );
+    }
+
     const response = await fetch(
-        `${baseUrl}/api/saved-posts?userId=${userId}`,
+        `${baseUrl}/api/saved-posts`,
         {
             method: "GET",
             credentials: "include",
@@ -14,7 +20,8 @@ export const getSavedPosts = async (userId: string) => {
 
     if (!response.ok) {
         throw new Error(
-            data.message || "Failed to fetch saved posts"
+            data.message ||
+            "Failed to fetch saved posts"
         );
     }
 

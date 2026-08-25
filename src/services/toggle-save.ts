@@ -1,11 +1,15 @@
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export const toggleSavePost = async (postId: string) => {
+export const toggleSavePost = async (
+    postId: string
+) => {
     if (!baseUrl) {
-        throw new Error("Backend URL is not configured");
+        throw new Error(
+            "Backend URL is not configured"
+        );
     }
 
-    const res = await fetch(
+    const response = await fetch(
         `${baseUrl}/api/toggle-save/${postId}`,
         {
             method: "POST",
@@ -13,13 +17,14 @@ export const toggleSavePost = async (postId: string) => {
         }
     );
 
-    const data = await res.json();
+    const data = await response.json();
 
-    if (!res.ok) {
+    if (!response.ok) {
         return {
             success: false,
             saved: false,
-            unauthorized: res.status === 401,
+            unauthorized:
+                response.status === 401,
             message: data.message,
         };
     }

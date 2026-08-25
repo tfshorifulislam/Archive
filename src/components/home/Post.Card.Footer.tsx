@@ -12,7 +12,6 @@ import { Button } from "../ui/button";
 import { checkSavedPost } from "@/services/check-save-post";
 import { toggleSavePost } from "@/services/toggle-save";
 
-
 interface PostCardFooterProps {
     postId: string;
 }
@@ -22,37 +21,52 @@ const PostCardFooter = ({
 }: PostCardFooterProps) => {
     const router = useRouter();
 
-    const [isSaved, setIsSaved] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [isSaved, setIsSaved] =
+        useState(false);
+
+    const [loading, setLoading] =
+        useState(false);
 
     useEffect(() => {
+        let cancelled = false;
+
         const checkSaveStatus = async () => {
             try {
-                const data = await checkSavedPost(postId);
+                const data =
+                    await checkSavedPost(postId);
 
-                if (data.success) {
+                if (
+                    !cancelled &&
+                    data.success
+                ) {
                     setIsSaved(data.saved);
                 }
             } catch (error) {
                 console.error(
-                    "Check save status error:",
+                    "CHECK SAVE STATUS ERROR:",
                     error
                 );
             }
         };
 
         checkSaveStatus();
+
+        return () => {
+            cancelled = true;
+        };
     }, [postId]);
 
     const handleSave = async () => {
-        if (loading) return;
+        if (loading) {
+            return;
+        }
 
         try {
             setLoading(true);
 
-            const data = await toggleSavePost(postId);
+            const data =
+                await toggleSavePost(postId);
 
-            // Not logged in
             if (data.unauthorized) {
                 router.push("/auth/login");
                 return;
@@ -63,7 +77,7 @@ const PostCardFooter = ({
             }
         } catch (error) {
             console.error(
-                "Save post error:",
+                "SAVE POST ERROR:",
                 error
             );
         } finally {
@@ -73,8 +87,9 @@ const PostCardFooter = ({
 
     return (
         <div className="mt-7 flex items-center justify-between">
+
             <div className="flex items-center gap-1">
-                {/* Like */}
+
                 <Button
                     type="button"
                     variant="ghost"
@@ -88,7 +103,6 @@ const PostCardFooter = ({
                     </span>
                 </Button>
 
-                {/* Comment */}
                 <Button
                     type="button"
                     variant="ghost"
@@ -101,9 +115,9 @@ const PostCardFooter = ({
                         Comment
                     </span>
                 </Button>
+
             </div>
 
-            {/* Save */}
             <Button
                 type="button"
                 variant="ghost"
@@ -120,6 +134,7 @@ const PostCardFooter = ({
                     }`}
                 />
             </Button>
+
         </div>
     );
 };

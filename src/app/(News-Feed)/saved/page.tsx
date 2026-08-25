@@ -7,14 +7,26 @@ import SavedPosts from "@/components/home/SavedPosts";
 import { SavedPost } from "../../../../types/createPost";
 
 export default function SavedPage() {
-    const { data: session, isPending } = useSession();
+    const {
+        data: session,
+        isPending,
+    } = useSession();
 
-    const [savedPosts, setSavedPosts] = useState<SavedPost[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [savedPosts, setSavedPosts] =
+        useState<SavedPost[]>([]);
+
+    const [loading, setLoading] =
+        useState(true);
+
+    const [error, setError] =
+        useState<string | null>(null);
 
     useEffect(() => {
-        if (isPending || !session?.user?.id) {
+        if (isPending) {
+            return;
+        }
+
+        if (!session?.user?.id) {
             return;
         }
 
@@ -22,17 +34,31 @@ export default function SavedPage() {
 
         const fetchSavedPosts = async () => {
             try {
-                const data = await getSavedPosts(session.user.id);
+                setLoading(true);
+                setError(null);
 
-                if (!cancelled) {
-                    setSavedPosts(data.savedPosts ?? []);
-                    setLoading(false);
+                const data = await getSavedPosts();
+
+                if (cancelled) {
+                    return;
                 }
+
+                setSavedPosts(
+                    data.savedPosts ?? []
+                );
             } catch (error) {
-                console.error("GET SAVED POSTS ERROR:", error);
+                console.error(
+                    "GET SAVED POSTS ERROR:",
+                    error
+                );
 
                 if (!cancelled) {
-                    setError("Failed to load saved posts");
+                    setError(
+                        "Failed to load saved posts"
+                    );
+                }
+            } finally {
+                if (!cancelled) {
                     setLoading(false);
                 }
             }
@@ -43,7 +69,10 @@ export default function SavedPage() {
         return () => {
             cancelled = true;
         };
-    }, [session?.user?.id, isPending]);
+    }, [
+        session?.user?.id,
+        isPending,
+    ]);
 
     if (isPending) {
         return (
@@ -83,7 +112,9 @@ export default function SavedPage() {
 
     return (
         <main className="mx-auto min-h-screen w-full">
-            <SavedPosts allSavePost={savedPosts} />
+            <SavedPosts
+                allSavePost={savedPosts}
+            />
         </main>
     );
 }
