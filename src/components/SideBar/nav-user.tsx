@@ -17,10 +17,10 @@ import {
 } from "@/components/ui/sidebar"
 import {
   ChevronsUpDownIcon,
-  SparklesIcon,
-  BadgeCheckIcon,
-  CreditCardIcon,
-  BellIcon,
+  // SparklesIcon,
+  // BadgeCheckIcon,
+  // CreditCardIcon,
+  // BellIcon,
   LogOutIcon,
 } from "lucide-react"
 import { AvatarWithBadge } from "../Shared/Avatar"
@@ -92,7 +92,7 @@ export function NavUser({ user }: { user: userTypeProps }) {
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
-
+{/* 
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <SparklesIcon />
@@ -119,7 +119,7 @@ export function NavUser({ user }: { user: userTypeProps }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
 
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
 
             <DropdownMenuItem
               onClick={handleLogout}

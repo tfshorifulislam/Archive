@@ -77,7 +77,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
       return;
     }
 
-    router.push('/auth/emailVerifyMessage')
+    router.push('/auth/login')
   }
 
   return (
