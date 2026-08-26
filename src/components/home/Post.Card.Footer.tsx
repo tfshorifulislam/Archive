@@ -15,6 +15,8 @@ import { toggleSavePost } from "@/services/toggle-save";
 import { checkLikePost } from "@/services/check-like";
 import { toggleLikePost } from "@/services/toggle-like";
 
+import CommentModal from "../Comments/CommentModal";
+
 import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
@@ -25,23 +27,42 @@ interface PostCardFooterProps {
 const PostCardFooter = ({
     postId,
 }: PostCardFooterProps) => {
+
     const { data: session } = useSession();
 
     const userId = session?.user?.id;
 
     const router = useRouter();
 
-    const [isSaved, setIsSaved] = useState(false);
-    const [isLiked, setIsLiked] = useState(false);
+    const [isSaved, setIsSaved] =
+        useState(false);
 
-    const [likeCount, setLikeCount] = useState(0);
+    const [isLiked, setIsLiked] =
+        useState(false);
 
-    const [saveLoading, setSaveLoading] = useState(false);
-    const [likeLoading, setLikeLoading] = useState(false);
+    const [commentOpen, setCommentOpen] =
+        useState(false);
+
+    const [likeCount, setLikeCount] =
+        useState(0);
+
+    const [saveLoading, setSaveLoading] =
+        useState(false);
+
+    const [likeLoading, setLikeLoading] =
+        useState(false);
+
+
+    // ============================================
+    // LOAD LIKE + SAVE STATUS
+    // ============================================
 
     useEffect(() => {
+
         const loadStatus = async () => {
+
             try {
+
                 const [
                     saveData,
                     likeData,
@@ -56,13 +77,18 @@ const PostCardFooter = ({
                     ),
                 ]);
 
+
                 if (saveData.success) {
+
                     setIsSaved(
                         saveData.saved
                     );
+
                 }
 
+
                 if (likeData.success) {
+
                     setIsLiked(
                         likeData.liked
                     );
@@ -70,27 +96,47 @@ const PostCardFooter = ({
                     setLikeCount(
                         likeData.likeCount ?? 0
                     );
+
                 }
+
             } catch (error) {
+
                 console.error(
                     "Load post status error:",
                     error
                 );
+
             }
+
         };
 
         loadStatus();
+
     }, [postId, userId]);
 
+
+    // ============================================
+    // LIKE
+    // ============================================
+
     const handleLike = async () => {
+
         if (likeLoading) return;
 
+
         if (!userId) {
-            router.push("/auth/login");
+
+            router.push(
+                "/auth/login"
+            );
+
             return;
+
         }
 
+
         try {
+
             setLikeLoading(true);
 
             const data =
@@ -99,7 +145,9 @@ const PostCardFooter = ({
                     userId
                 );
 
+
             if (data.success) {
+
                 setIsLiked(
                     data.liked
                 );
@@ -107,26 +155,47 @@ const PostCardFooter = ({
                 setLikeCount(
                     data.likeCount ?? 0
                 );
+
             }
+
         } catch (error) {
+
             console.error(
                 "Like post error:",
                 error
             );
+
         } finally {
+
             setLikeLoading(false);
+
         }
+
     };
 
+
+    // ============================================
+    // SAVE
+    // ============================================
+
     const handleSave = async () => {
+
         if (saveLoading) return;
 
+
         if (!userId) {
-            router.push("/auth/login");
+
+            router.push(
+                "/auth/login"
+            );
+
             return;
+
         }
 
+
         try {
+
             setSaveLoading(true);
 
             const data =
@@ -135,92 +204,135 @@ const PostCardFooter = ({
                     userId
                 );
 
+
             if (data.success) {
+
                 setIsSaved(
                     data.saved
                 );
+
             }
+
         } catch (error) {
+
             console.error(
                 "Save post error:",
                 error
             );
+
         } finally {
+
             setSaveLoading(false);
+
         }
+
     };
 
+
+    // ============================================
+    // UI
+    // ============================================
+
     return (
-        <div className="mt-7 flex items-center justify-between">
+        <>
+            <div className="mt-7 flex items-center justify-between">
 
-            <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1">
 
-                {/* Like */}
+                    {/* ================================= */}
+                    {/* LIKE */}
+                    {/* ================================= */}
+
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleLike}
+                        disabled={likeLoading}
+                        className="h-9 gap-2 rounded-full px-3 text-muted-foreground hover:text-foreground"
+                    >
+
+                        <Heart
+                            className={`h-4 w-4 transition-colors ${isLiked
+                                    ? "fill-current text-red-500"
+                                    : ""
+                                }`}
+                        />
+
+                        <span className="text-xs sm:text-sm">
+                            Like
+                        </span>
+
+                        {likeCount > 0 && (
+                            <span className="text-xs">
+                                {likeCount}
+                            </span>
+                        )}
+
+                    </Button>
+
+
+                    {/* ================================= */}
+                    {/* COMMENT */}
+                    {/* ================================= */}
+
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                            setCommentOpen(true)
+                        }
+                        className="h-9 gap-2 rounded-full px-3 text-muted-foreground hover:text-foreground"
+                    >
+                        <MessageCircle className="h-4 w-4" />
+
+                        <span className="text-xs sm:text-sm">
+                            Comment
+                        </span>
+                    </Button>
+
+                </div>
+
+
+                {/* ================================= */}
+                {/* SAVE */}
+                {/* ================================= */}
 
                 <Button
                     type="button"
                     variant="ghost"
-                    size="sm"
-                    onClick={handleLike}
-                    disabled={likeLoading}
-                    className="h-9 gap-2 rounded-full px-3 text-muted-foreground hover:text-foreground"
+                    size="icon"
+                    onClick={handleSave}
+                    disabled={saveLoading}
+                    className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground"
                 >
-                    <Heart
-                        className={`h-4 w-4 transition-colors ${
-                            isLiked
-                                ? "fill-current text-red-500"
+
+                    <Bookmark
+                        className={`h-4 w-4 transition-colors ${isSaved
+                                ? "fill-current text-primary"
                                 : ""
-                        }`}
+                            }`}
                     />
 
-                    <span className="text-xs sm:text-sm">
-                        Like
-                    </span>
-
-                    {likeCount > 0 && (
-                        <span className="text-xs">
-                            {likeCount}
-                        </span>
-                    )}
-                </Button>
-
-                {/* Comment */}
-
-                <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-9 gap-2 rounded-full px-3 text-muted-foreground hover:text-foreground"
-                >
-                    <MessageCircle className="h-4 w-4" />
-
-                    <span className="text-xs sm:text-sm">
-                        Comment
-                    </span>
                 </Button>
 
             </div>
 
-            {/* Save */}
 
-            <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={handleSave}
-                disabled={saveLoading}
-                className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground"
-            >
-                <Bookmark
-                    className={`h-4 w-4 transition-colors ${
-                        isSaved
-                            ? "fill-current text-primary"
-                            : ""
-                    }`}
-                />
-            </Button>
+            {/* ===================================== */}
+            {/* COMMENT MODAL */}
+            {/* ===================================== */}
 
-        </div>
+            <CommentModal
+                postId={postId}
+                open={commentOpen}
+                onClose={() =>
+                    setCommentOpen(false)
+                }
+            />
+
+        </>
     );
 };
 

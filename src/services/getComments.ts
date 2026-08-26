@@ -1,10 +1,13 @@
-import { Post } from "../../types/createPost";
-
-interface CommentUser {
+export interface CommentUser {
     id: string;
-    name: string;
-    userName: string;
+    name: string | null;
+    userName: string | null;
     image: string | null;
+}
+
+export interface CommentLike {
+    id: string;
+    userId: string;
 }
 
 export interface Comment {
@@ -15,10 +18,21 @@ export interface Comment {
     parentId: string | null;
     createdAt: string;
     updatedAt: string;
+
     user: CommentUser;
+
+    replies: Comment[];
+
+    likes?: CommentLike[];
+
+    _count?: {
+        likes: number;
+    };
+
+    isLiked?: boolean;
 }
 
-interface GetCommentsResponse {
+export interface GetCommentsResponse {
     success: boolean;
     message: string;
     comments: Comment[];
@@ -27,12 +41,9 @@ interface GetCommentsResponse {
 export const getComments = async (
     postId: string
 ): Promise<GetCommentsResponse> => {
-
-    const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-    const response = await fetch(`${baseUrl}/api/get-comment/${postId}`,
+    const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get-comment/${postId}`,
         {
-            credentials: "include",
             cache: "no-store",
         }
     );
@@ -41,7 +52,7 @@ export const getComments = async (
 
     if (!response.ok) {
         throw new Error(
-            data.message || "Failed to fetch comments"
+            data?.message || "Failed to fetch comments"
         );
     }
 
