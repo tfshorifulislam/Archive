@@ -122,7 +122,7 @@ const PostCard = ({ post }: PostCardProps) => {
                     ))}
                 </div>
             )}
-
+ 
             {/* Footer */}
             <PostCardFooter postId={post.id} />
         </article>

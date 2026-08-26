@@ -30,7 +30,7 @@ const CreatePostWrapper = () => {
     } = useCreatePost();
 
     return (
-        <main className="min-h-screen">
+        <main className="min-h-screen max-w-2xl mx-auto">
 
             <div className="mx-auto py-8 sm:py-12">
 
