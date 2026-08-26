@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import parse from "html-react-parser";
 
@@ -13,7 +13,9 @@ interface PostDetailsPageProps {
     }>;
 }
 
-const PostDetailsPage = async ({ params }: PostDetailsPageProps) => {
+const PostDetailsPage = async ({
+    params,
+}: PostDetailsPageProps) => {
     const { id } = await params;
 
     const data = await getPostById(id);
@@ -27,107 +29,111 @@ const PostDetailsPage = async ({ params }: PostDetailsPageProps) => {
     );
 
     return (
-        <main className="min-h-screen bg-background">
+        <main className="min-h-screen w-full overflow-x-hidden bg-background">
 
-            {/* Top Navigation */}
-            <div className="border-b">
-                <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-
+            {/* Navigation */}
+            <div className="w-full border-b">
+                <div className="mx-auto flex h-12 w-full max-w-6xl items-center px-4 sm:h-14 sm:px-6">
                     <Link
                         href="/"
-                        className="flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground"
+                        className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
-                        <ArrowLeft className="h-4 w-4" />
-                        Back
+                        <ArrowLeft className="h-4 w-4 shrink-0" />
+                        <span>Back</span>
                     </Link>
-
                 </div>
             </div>
 
             {/* Article */}
-            <article className="mx-auto w-full max-w-4xl px-4 sm:px-6">
+            <article className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
 
                 {/* Header */}
-                <header className="mx-auto pt-12 pb-10 sm:pt-16 sm:pb-12">
+                <header className="mx-auto w-full max-w-4xl pt-8 pb-8 sm:pt-12 sm:pb-10 lg:pt-16 lg:pb-12">
 
                     {/* Title */}
-                    <h1 className="text-[38px] font-semibold leading-[1.12] tracking-[-0.02em] sm:text-[48px] lg:text-[56px]">
+                    <h1
+                        className="wrap-break-word text-2x font-bold leading-[1.15] tracking-tight sm:text-4xl sm:leading-[1.12] lg:text-5xl xl:text-[52px] ">
                         {post.title || "Untitled post"}
                     </h1>
 
                     {/* Author */}
-                    <div className="mt-7">
+                    <div className="mt-6 sm:mt-7">
                         <Link
                             href={`/profile/${post.user.userName}`}
-                            className="flex items-center gap-3"
+                            className="flex min-w-0 items-center gap-3"
                         >
-                            <AvatarWithBadge user={post.user} />
+                            <div className="shrink-0">
+                                <AvatarWithBadge user={post.user} />
+                            </div>
 
-                            <div>
-                                <p className="text-sm font-medium">
+                            <div className="min-w-0">
+                                <p className="truncate text-sm font-semibold sm:text-[15px]">
                                     {post.user.name}
                                 </p>
 
-                                <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                                <p className="mt-1 truncate text-xs text-muted-foreground sm:text-sm">
                                     {formattedDate} · 5 min read
                                 </p>
                             </div>
                         </Link>
                     </div>
-
                 </header>
 
                 {/* Hero Image */}
-                {post.mediaUrl && post.mediaType === "image" && (
-                    <div className="mx-auto mb-12 w-full sm:mb-16">
-                        <Image
-                            src={post.mediaUrl}
-                            alt={post.title || "Post image"}
-                            width={1200}
-                            height={800}
-                            priority
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 896px"
-                            className="h-auto w-full object-contain"
-                        />
-
-                        {/* Tags */}
-                        {post.tags.length > 0 && (
-                            <div className="mt-6 flex flex-wrap gap-2">
-                                {post.tags.map((tag) => (
-                                    <span
-                                        key={tag}
-                                        className="rounded-full bg-muted px-3 py-1.5 text-xs text-muted-foreground"
-                                    >
-                                        #{tag}
-                                    </span>
-                                ))}
+                {post.mediaUrl &&
+                    post.mediaType === "image" && (
+                        <div className="mx-auto w-full max-w-4xl">
+                            <div className="overflow-hidden rounded-xl sm:rounded-2xl">
+                                <Image
+                                    src={post.mediaUrl}
+                                    alt={post.title || "Post image"}
+                                    width={1200}
+                                    height={800}
+                                    priority
+                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 896px"
+                                    className="block h-auto w-full object-cover"
+                                />
                             </div>
-                        )}
+                        </div>
+                    )}
+
+                {/* Tags */}
+                {post.tags.length > 0 && (
+                    <div className="mx-auto mt-5 flex w-full max-w-4xl flex-wrap gap-2 sm:mt-6">
+                        {post.tags.map((tag) => (
+                            <span
+                                key={tag}
+                                className="max-w-full wrap-break-word rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground">
+                                #{tag}
+                            </span>
+                        ))}
                     </div>
                 )}
 
-
                 {/* Content */}
-                <div className="mx-auto ">
+                <div className="mx-auto mt-8 w-full max-w-3xl sm:mt-10 lg:mt-12">
 
-                    <div className="whitespace-pre-wrap text-[18px] leading-[1.8] text-foreground/90 sm:text-[19px] sm:leading-[1.85]">
+                    <div
+                        className="min-w-0 wrap-break-word text-base leading-7 text-foreground/90 sm:text-[17px] sm:leading-8 lg:text-[18px] lg:leading-[1.85] ">
                         {parse(post.content)}
                     </div>
 
                     {/* Author Footer */}
-                    <div className="my-16 border-y py-8">
+                    <div className="my-10 border-y py-7 sm:my-14 sm:py-8 lg:my-16">
                         <Link
                             href={`/profile/${post.user.userName}`}
-                            className="flex items-center gap-4"
+                            className="flex min-w-0 items-center gap-3 sm:gap-4"
                         >
-                            <AvatarWithBadge user={post.user} />
+                            <div className="shrink-0">
+                                <AvatarWithBadge user={post.user} />
+                            </div>
 
-                            <div>
-                                <p className="font-medium">
+                            <div className="min-w-0">
+                                <p className="truncate text-sm font-semibold sm:text-base">
                                     {post.user.name}
                                 </p>
 
-                                <p className="mt-1 text-sm text-muted-foreground">
+                                <p className="mt-1 truncate text-xs text-muted-foreground sm:text-sm">
                                     @{post.user.userName}
                                 </p>
                             </div>
