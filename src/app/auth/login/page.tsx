@@ -20,7 +20,7 @@ export default function LoginPage() {
         type="button"
         onClick={handleBack}
         aria-label="Go back"
-        className="absolute left-4 top-4 z-20 inline-flex h-10 items-center gap-2 rounded-full border bg-background/90 px-3 text-sm font-medium shadow-sm backdrop-blur transition-colors hover:bg-muted md:left-6 md:top-6"
+        className="absolute left-4 top-4 z-20 inline-flex h-10 items-center gap-2 rounded-full border bg-background/90 px-3 text-sm font-medium backdrop-blur transition-colors hover:bg-muted md:left-6 md:top-6"
       >
         <ArrowLeft className="size-4" />
 

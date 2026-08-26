@@ -1,36 +1,79 @@
+"use client";
+
 import { SignupForm } from "@/components/Auth-Form/SignupForm";
-import { GalleryVerticalEnd } from "lucide-react";
+import { ArrowLeft, GalleryVerticalEnd } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-const page = () => {
+const Page = () => {
+    const router = useRouter();
+
+    const handleBack = () => {
+        if (window.history.length > 1) {
+            router.back();
+        } else {
+            router.push("/");
+        }
+    };
+
     return (
-        <div className="grid min-h-svh lg:grid-cols-2">
-            <div className="flex flex-col gap-4 p-6 md:p-10">
-                <div className="flex justify-center gap-2 md:justify-start">
-                    <Link href="/" className="flex items-center gap-2 font-medium">
-                        <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+        <div className="relative grid min-h-svh lg:grid-cols-2">
+
+
+            <button
+                type="button"
+                onClick={handleBack}
+                aria-label="Go back"
+                className="absolute left-4 top-4 z-20 inline-flex h-10 items-center gap-2 rounded-full border bg-background/90 px-3 text-sm font-medium backdrop-blur transition-colors hover:bg-muted md:left-6 md:top-6"
+            >
+                <ArrowLeft className="size-4" />
+
+                <span className="hidden sm:inline">
+                    Back
+                </span>
+            </button>
+
+            <div className="flex flex-col gap-4 p-6 pt-20 md:p-10 md:pt-24">
+
+                {/* Logo */}
+                <div className="flex justify-center md:justify-start">
+                    <Link
+                        href="/"
+                        className="flex items-center gap-2 font-medium"
+                    >
+                        <div className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
                             <GalleryVerticalEnd className="size-4" />
                         </div>
-                        StoryHub
+
+                        <span className="text-lg font-semibold">
+                            StoryHub
+                        </span>
                     </Link>
                 </div>
+
+                {/* Signup Form */}
                 <div className="flex flex-1 items-center justify-center">
-                    <div className="w-full max-w-xs">
+                    <div className="w-full max-w-sm">
                         <SignupForm />
                     </div>
                 </div>
             </div>
-            <div className="relative hidden bg-muted lg:block">
+
+            <div className="relative hidden min-h-svh overflow-hidden bg-muted lg:block">
                 <Image
                     fill
+                    priority
                     src="/placeholder2.jpg"
-                    alt="Image"
-                    className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+                    alt="StoryHub"
+                    className="object-cover dark:brightness-[0.2] dark:grayscale"
                 />
+
+                {/* Image Overlay */}
+                <div className="absolute inset-0 bg-black/10 dark:bg-black/20" />
             </div>
         </div>
     );
 };
 
-export default page;
+export default Page;
