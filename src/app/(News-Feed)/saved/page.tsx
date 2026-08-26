@@ -13,14 +13,11 @@ export default function SavedPage() {
         isPending,
     } = useSession();
 
-    const [savedPosts, setSavedPosts] =
-        useState<SavedPost[]>([]);
+    const [savedPosts, setSavedPosts] = useState<SavedPost[]>([]);
 
-    const [loading, setLoading] =
-        useState(true);
+    const [loading, setLoading] = useState(true);
 
-    const [error, setError] =
-        useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (isPending) {
@@ -75,12 +72,7 @@ export default function SavedPage() {
         isPending,
     ]);
 
-    if (isPending) {
-        return (
-            <Loading/>
-        );
-    }
-
+    
     if (!session?.user?.id) {
         return (
             <main className="mx-auto min-h-screen w-full p-6 ">
