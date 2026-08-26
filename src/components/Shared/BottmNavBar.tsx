@@ -28,9 +28,7 @@ const MobileBottomNav = () => {
     const [searchOpen, setSearchOpen] = useState(false);
     const [search, setSearch] = useState("");
 
-    // Guest sidebar state
-    const [guestSidebarOpen, setGuestSidebarOpen] =
-        useState(false);
+    const [guestSidebarOpen, setGuestSidebarOpen] = useState(false);
 
     const handleSearch = (
         e: React.FormEvent<HTMLFormElement>
