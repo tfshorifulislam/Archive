@@ -25,7 +25,7 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 flex w-full items-center border-b bg-background">
+    <header className="sticky top-0 z-50 hidden w-full items-center border-b bg-background md:flex">
       <div className="flex h-(--header-height) w-full items-center ">
 
         <Button

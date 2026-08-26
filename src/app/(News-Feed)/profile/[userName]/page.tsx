@@ -14,7 +14,7 @@ export default async function ProfilePage({ params }: ProfileUser) {
     const postsData = await getUserPosts(userName);
 
     return (
-        <main className="mx-auto min-h-screen w-full">
+        <main className="mx-auto min-h-screen w-full max-w-2xl">
             <ProfileHeader
                 isOwnProfile={false}
                 user={user}
