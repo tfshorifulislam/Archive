@@ -254,7 +254,7 @@ const PostCardFooter = ({
 
                         <Heart
                             className={`h-4 w-4 transition-colors ${isLiked
-                                    ? "fill-current text-red-500"
+                                    ? "fill-current text-black-500"
                                     : ""
                                 }`}
                         />

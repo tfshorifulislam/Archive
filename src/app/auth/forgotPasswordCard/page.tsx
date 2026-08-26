@@ -105,8 +105,8 @@ export default function ForgotPasswordPage() {
 
               {/* Error message */}
               {error && (
-                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 dark:border-red-900 dark:bg-red-950/30">
-                  <p className="text-sm leading-5 text-red-700 dark:text-red-400">
+                <div className="rounded-lg border border-black-200 bg-black-50 px-4 py-3 dark:border-black-900 dark:bg-black-950/30">
+                  <p className="text-sm leading-5 text-black-700 dark:text-black-400">
                     {error}
                   </p>
                 </div>
