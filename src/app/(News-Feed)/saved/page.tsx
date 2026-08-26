@@ -5,6 +5,7 @@ import { useSession } from "@/lib/auth-client";
 import { getSavedPosts } from "@/services/getSavePost";
 import SavedPosts from "@/components/home/SavedPosts";
 import { SavedPost } from "../../../../types/createPost";
+import Loading from "@/app/loading";
 
 export default function SavedPage() {
     const {
@@ -76,9 +77,7 @@ export default function SavedPage() {
 
     if (isPending) {
         return (
-            <main className="mx-auto min-h-screen w-full p-6">
-                Loading...
-            </main>
+            <Loading/>
         );
     }
 
