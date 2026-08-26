@@ -83,7 +83,7 @@ export default function SavedPage() {
 
     if (!session?.user?.id) {
         return (
-            <main className="mx-auto min-h-screen w-full p-6">
+            <main className="mx-auto min-h-screen w-full p-6 ">
                 <div className="text-center">
                     Please login to view your saved posts.
                 </div>
@@ -110,7 +110,7 @@ export default function SavedPage() {
     }
 
     return (
-        <main className="mx-auto min-h-screen w-full">
+        <main className="mx-auto min-h-screen w-full max-w-2xl">
             <SavedPosts
                 allSavePost={savedPosts}
             />
