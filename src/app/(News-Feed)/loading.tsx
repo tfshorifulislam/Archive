@@ -10,15 +10,7 @@ export default function Loading() {
                     <div className="absolute inset-0 rounded-full border border-border" />
 
                     <div
-                        className="
-                            absolute
-                            inset-0
-                            rounded-full
-                            border-2
-                            border-transparent
-                            border-t-foreground
-                            animate-spin
-                        "
+                        className="absolute inset-0 rounded-full border-2 border-transparent border-t-foreground animate-spin "
                         style={{
                             animationDuration: "1s",
                         }}

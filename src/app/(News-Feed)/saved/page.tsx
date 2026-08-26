@@ -5,7 +5,7 @@ import { useSession } from "@/lib/auth-client";
 import { getSavedPosts } from "@/services/getSavePost";
 import SavedPosts from "@/components/home/SavedPosts";
 import { SavedPost } from "../../../../types/createPost";
-import Loading from "@/app/loading";
+import Loading from "@/app/(News-Feed)/loading";
 
 export default function SavedPage() {
     const {
