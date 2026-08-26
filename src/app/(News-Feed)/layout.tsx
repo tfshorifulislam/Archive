@@ -37,7 +37,7 @@ export default function NewsFeedLayout({
           <MobileBottomNav />
 
           {/* Right Sidebar */}
-          <aside className="hidden w-90 shrink-0 border-l lg:block">
+          <aside className="hidden w-90 shrink-0 border-l lg:block ">
             <div className="sticky top-14 p-4">
               <RecommendedTopics />
               <AboutSpace />

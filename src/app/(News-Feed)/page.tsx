@@ -2,38 +2,39 @@ import PostCard from "@/components/home/Post.Card";
 import { getAllPost } from "@/services/get.All.Posts";
 
 const HomePage = async () => {
-  const allPosts = await getAllPost();
+    const allPosts = await getAllPost();
+    const postsItem = allPosts.posts;
 
-  const postsItem = allPosts.posts;
+    return (
+        <main className="mx-auto min-h-screen w-full max-w-2xl bg-background">
 
+            {/* Feed Header */}
+            <header className="border-b bg-background">
+                <div className="flex min-h-14 items-center px-4 sm:min-h-16 sm:px-6">
+                    <div>
+                        <h1 className="text-base font-semibold tracking-tight sm:text-lg">
+                            Home
+                        </h1>
 
-  return (
-    <div>
+                        <p className="mt-0.5 text-[11px] text-muted-foreground sm:text-xs">
+                            Latest stories from the community
+                        </p>
+                    </div>
+                </div>
+            </header>
 
-      <div className="space-y-5 my-5">
+            {/* Feed */}
+            <section className="w-full ">
+                {postsItem.map((post) => (
+                    <PostCard
+                        key={post.id}
+                        post={post}
+                    />
+                ))}
+            </section>
 
-       
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Your Feed
-          </h1>
-
-          <p className="mt-2 text-sm text-muted-foreground">
-            Discover stories, ideas, and posts from the community.
-          </p>
-        </div>
-
-
-        {postsItem.map((post) => (
-          <div key={post.id}>
-            <PostCard
-              post={post} />
-          </div>
-        ))}
-
-      </div>
-    </div>
-  );
+        </main>
+    );
 };
 
 export default HomePage;

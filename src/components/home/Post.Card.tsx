@@ -28,16 +28,18 @@ const PostCard = ({ post }: PostCardProps) => {
             <div className="flex items-center justify-between">
                 <Link
                     href={`/profile/${post.user.userName}`}
-                    className="flex items-center gap-3"
+                    className="flex min-w-0 items-center gap-3"
                 >
-                    <AvatarWithBadge user={post.user} />
+                    <div className="shrink-0">
+                        <AvatarWithBadge user={post.user} />
+                    </div>
 
-                    <div className="leading-tight">
-                        <p className="text-sm font-semibold sm:text-[15px]">
+                    <div className="min-w-0 leading-tight">
+                        <p className="truncate text-sm font-semibold sm:text-[15px]">
                             {post.user.name}
                         </p>
 
-                        <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">
+                        <p className="mt-1.5 truncate text-xs text-muted-foreground sm:text-sm">
                             @{post.user.userName} · {formattedDate}
                         </p>
                     </div>
@@ -47,95 +49,105 @@ const PostCard = ({ post }: PostCardProps) => {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground"
+                    className="h-9 w-9 shrink-0 rounded-full text-muted-foreground hover:text-foreground"
                 >
                     <MoreHorizontal className="h-5 w-5" />
                 </Button>
             </div>
 
-            {/* Post Content */}
+            {/* Post */}
             <div className="mt-6 sm:mt-8">
 
-                {/* Desktop: Text + Image */}
-                <div className="flex flex-col gap-5 md:flex-row md:gap-8">
+                {/* Title */}
+                <Link href={`/posts/${post.id}`}>
+                    <h2
+                        className="
+                            line-clamp-3
+                            text-2xl
+                            font-bold
+                            leading-[1.2]
+                            tracking-[-0.02em]
+                            transition-colors
+                            group-hover:text-primary
 
-                    {/* Text */}
-                    <div className="min-w-0 flex-1">
+                            sm:text-3xl
+                        "
+                    >
+                        {post.title || "Untitled post"}
+                    </h2>
+                </Link>
 
-                        {/* Title */}
-                        <Link href={`/posts/${post.id}`}>
-                            <h2 className="line-clamp-3 text-2xl font-bold leading-[1.2] tracking-[-0.02em] transition-colors group-hover:text-primary sm:text-3xl">
-                                {post.title || "Untitled post"}
-                            </h2>
+                {/* Full Width Image */}
+                {post.mediaUrl &&
+                    post.mediaType === "image" && (
+                        <Link
+                            href={`/posts/${post.id}`}
+                            className="
+                                relative
+                                mt-5
+                                block
+                                aspect-video
+                                w-full
+                                overflow-hidden
+                                rounded-xl
+
+                                sm:mt-6
+                                sm:rounded-2xl
+                            "
+                        >
+                            <Image
+                                src={post.mediaUrl}
+                                alt={
+                                    post.title ||
+                                    "Post image"
+                                }
+                                fill
+                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 800px"
+                                className="
+                                    object-cover
+                                    transition-transform
+                                    duration-300
+                                    group-hover:scale-[1.02]
+                                "
+                            />
                         </Link>
+                    )}
 
-                        {/* Mobile Image */}
-                        {post.mediaUrl &&
-                            post.mediaType === "image" && (
-                                <Link
-                                    href={`/posts/${post.id}`}
-                                    className="relative mt-5 block aspect-video w-full overflow-hidden rounded-xl md:hidden"
-                                >
-                                    <Image
-                                        src={post.mediaUrl}
-                                        alt={
-                                            post.title ||
-                                            "Post image"
-                                        }
-                                        fill
-                                        sizes="100vw"
-                                        className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                                    />
-                                </Link>
-                            )}
+                {/* Description */}
+                <div className="mt-5 sm:mt-6">
+                    <div
+                        className="
+                            line-clamp-3
+                            text-[15px]
+                            leading-7
+                            text-muted-foreground
 
-                        {/* Description */}
-                        <div className="mt-4 sm:mt-5">
-                            <div className="line-clamp-3 text-[15px] leading-7 text-muted-foreground sm:text-base sm:leading-7">
-                                {parse(post.content)}
-                            </div>
-
-                            <Link
-                                href={`/posts/${post.id}`}
-                                className="mt-2 inline-block text-sm font-medium text-primary hover:underline"
-                            >
-                                See more
-                            </Link>
-                        </div>
-
-                        {/* Reading time + first tag */}
-                        <div className="mt-5 flex flex-wrap items-center gap-2.5 text-xs text-muted-foreground sm:text-sm">
-                            <span>5 min read</span>
-
-                            <span>·</span>
-
-                            <span>
-                                {post.tags.length > 0
-                                    ? `#${post.tags[0]}`
-                                    : "Article"}
-                            </span>
-                        </div>
+                            sm:text-base
+                            sm:leading-7
+                        "
+                    >
+                        {parse(post.content)}
                     </div>
 
-                    {/* Desktop Image */}
-                    {post.mediaUrl &&
-                        post.mediaType === "image" && (
-                            <Link
-                                href={`/posts/${post.id}`}
-                                className="relative hidden h-36 w-44 shrink-0 items-center justify-center overflow-hidden rounded-xl sm:h-40 sm:w-56 md:flex md:h-44 md:w-64"
-                            >
-                                <Image
-                                    src={post.mediaUrl}
-                                    alt={
-                                        post.title ||
-                                        "Post image"
-                                    }
-                                    fill
-                                    sizes="(max-width: 768px) 224px, 256px"
-                                    className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                                />
-                            </Link>
-                        )}
+                    <Link
+                        href={`/posts/${post.id}`}
+                        className="mt-2 inline-block text-sm font-medium text-primary hover:underline"
+                    >
+                        See more
+                    </Link>
+                </div>
+
+                {/* Reading Time */}
+                <div className="mt-5 flex flex-wrap items-center gap-2.5 text-xs text-muted-foreground sm:text-sm">
+                    <span>5 min read</span>
+
+                    <span>·</span>
+
+                    <span>
+                        {post.tags.length > 0
+                            ? `#${post.tags[0]}`
+                            : "Article"}
+                    </span>
                 </div>
             </div>
 
@@ -145,7 +157,17 @@ const PostCard = ({ post }: PostCardProps) => {
                     {post.tags.map((tag) => (
                         <span
                             key={tag}
-                            className="rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/80"
+                            className="
+                                rounded-full
+                                bg-muted
+                                px-3
+                                py-1.5
+                                text-xs
+                                font-medium
+                                text-muted-foreground
+                                transition-colors
+                                hover:bg-muted/80
+                            "
                         >
                             #{tag}
                         </span>
