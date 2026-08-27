@@ -8,15 +8,11 @@ import {
 } from "lucide-react";
 
 import { Button } from "../ui/button";
-
 import { checkSavedPost } from "@/services/check-save-post";
 import { toggleSavePost } from "@/services/toggle-save";
-
 import { checkLikePost } from "@/services/check-like";
 import { toggleLikePost } from "@/services/toggle-like";
-
 import CommentModal from "../Comments/CommentModal";
-
 import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
@@ -27,211 +23,119 @@ interface PostCardFooterProps {
 const PostCardFooter = ({
     postId,
 }: PostCardFooterProps) => {
-
     const { data: session } = useSession();
-
     const userId = session?.user?.id;
-
     const router = useRouter();
 
-    const [isSaved, setIsSaved] =
-        useState(false);
+    const [isLiked, setIsLiked] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
+    const [commentOpen, setCommentOpen] = useState(false);
 
-    const [isLiked, setIsLiked] =
-        useState(false);
+    const [likeLoading, setLikeLoading] = useState(false);
+    const [saveLoading, setSaveLoading] = useState(false);
 
-    const [commentOpen, setCommentOpen] =
-        useState(false);
-
-    const [likeCount, setLikeCount] =
-        useState(0);
-
-    const [saveLoading, setSaveLoading] =
-        useState(false);
-
-    const [likeLoading, setLikeLoading] =
-        useState(false);
-
-
-    // ============================================
-    // LOAD LIKE + SAVE STATUS
-    // ============================================
-
+    // Load initial status
     useEffect(() => {
+        if (!userId) return;
 
-        const loadStatus = async () => {
-
-            try {
-
-                const [
-                    saveData,
-                    likeData,
-                ] = await Promise.all([
-                    checkSavedPost(
-                        postId,
-                        userId
-                    ),
-                    checkLikePost(
-                        postId,
-                        userId
-                    ),
-                ]);
-
-
-                if (saveData.success) {
-
-                    setIsSaved(
-                        saveData.saved
-                    );
-
-                }
-
-
-                if (likeData.success) {
-
-                    setIsLiked(
-                        likeData.liked
-                    );
-
-                    setLikeCount(
-                        likeData.likeCount ?? 0
-                    );
-
-                }
-
-            } catch (error) {
-
-                console.error(
-                    "Load post status error:",
-                    error
-                );
-
+        Promise.all([
+            checkLikePost(postId, userId),
+            checkSavedPost(postId, userId),
+        ]).then(([like, save]) => {
+            if (like.success) {
+                setIsLiked(like.liked);
+                setLikeCount(like.likeCount ?? 0);
             }
 
-        };
-
-        loadStatus();
-
+            if (save.success) {
+                setIsSaved(save.saved);
+            }
+        }).catch(console.error);
     }, [postId, userId]);
 
-
-    // ============================================
-    // LIKE
-    // ============================================
-
+    // Like
     const handleLike = async () => {
-
         if (likeLoading) return;
 
-
         if (!userId) {
-
-            router.push(
-                "/auth/login"
-            );
-
+            router.push("/auth/login");
             return;
-
         }
 
+        // Save old state
+        const oldLiked = isLiked;
+        const oldCount = likeCount;
+
+        // Instant UI update
+        setIsLiked(!oldLiked);
+        setLikeCount(
+            oldLiked
+                ? Math.max(0, oldCount - 1)
+                : oldCount + 1
+        );
 
         try {
-
             setLikeLoading(true);
 
-            const data =
-                await toggleLikePost(
-                    postId,
-                    userId
-                );
-
-
-            if (data.success) {
-
-                setIsLiked(
-                    data.liked
-                );
-
-                setLikeCount(
-                    data.likeCount ?? 0
-                );
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Like post error:",
-                error
+            const data = await toggleLikePost(
+                postId,
+                userId
             );
 
+            if (data.success) {
+                setIsLiked(data.liked);
+                setLikeCount(data.likeCount ?? 0);
+            } else {
+                // rollback
+                setIsLiked(oldLiked);
+                setLikeCount(oldCount);
+            }
+        } catch (error) {
+            console.error("Like error:", error);
+
+            // rollback
+            setIsLiked(oldLiked);
+            setLikeCount(oldCount);
         } finally {
-
             setLikeLoading(false);
-
         }
-
     };
 
-
-    // ============================================
-    // SAVE
-    // ============================================
-
+    // Save
     const handleSave = async () => {
-
         if (saveLoading) return;
 
-
         if (!userId) {
-
-            router.push(
-                "/auth/login"
-            );
-
+            router.push("/auth/login");
             return;
-
         }
 
+        const oldSaved = isSaved;
+
+        // Instant UI update
+        setIsSaved(!oldSaved);
 
         try {
-
             setSaveLoading(true);
 
-            const data =
-                await toggleSavePost(
-                    postId,
-                    userId
-                );
-
-
-            if (data.success) {
-
-                setIsSaved(
-                    data.saved
-                );
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Save post error:",
-                error
+            const data = await toggleSavePost(
+                postId,
+                userId
             );
 
+            if (data.success) {
+                setIsSaved(data.saved);
+            } else {
+                setIsSaved(oldSaved);
+            }
+        } catch (error) {
+            console.error("Save error:", error);
+            setIsSaved(oldSaved);
         } finally {
-
             setSaveLoading(false);
-
         }
-
     };
-
-
-    // ============================================
-    // UI
-    // ============================================
 
     return (
         <>
@@ -239,10 +143,7 @@ const PostCardFooter = ({
 
                 <div className="flex items-center gap-1">
 
-                    {/* ================================= */}
-                    {/* LIKE */}
-                    {/* ================================= */}
-
+                    {/* Like */}
                     <Button
                         type="button"
                         variant="ghost"
@@ -251,12 +152,12 @@ const PostCardFooter = ({
                         disabled={likeLoading}
                         className="h-9 gap-2 rounded-full px-3 text-muted-foreground hover:text-foreground"
                     >
-
                         <Heart
-                            className={`h-4 w-4 transition-colors ${isLiked
-                                    ? "fill-current text-black-500"
+                            className={`h-4 w-4 ${
+                                isLiked
+                                    ? "fill-current text-red-500"
                                     : ""
-                                }`}
+                            }`}
                         />
 
                         <span className="text-xs sm:text-sm">
@@ -268,14 +169,9 @@ const PostCardFooter = ({
                                 {likeCount}
                             </span>
                         )}
-
                     </Button>
 
-
-                    {/* ================================= */}
-                    {/* COMMENT */}
-                    {/* ================================= */}
-
+                    {/* Comment */}
                     <Button
                         type="button"
                         variant="ghost"
@@ -291,14 +187,9 @@ const PostCardFooter = ({
                             Comment
                         </span>
                     </Button>
-
                 </div>
 
-
-                {/* ================================= */}
-                {/* SAVE */}
-                {/* ================================= */}
-
+                {/* Save */}
                 <Button
                     type="button"
                     variant="ghost"
@@ -307,22 +198,15 @@ const PostCardFooter = ({
                     disabled={saveLoading}
                     className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground"
                 >
-
                     <Bookmark
-                        className={`h-4 w-4 transition-colors ${isSaved
+                        className={`h-4 w-4 ${
+                            isSaved
                                 ? "fill-current text-primary"
                                 : ""
-                            }`}
+                        }`}
                     />
-
                 </Button>
-
             </div>
-
-
-            {/* ===================================== */}
-            {/* COMMENT MODAL */}
-            {/* ===================================== */}
 
             <CommentModal
                 postId={postId}
@@ -331,7 +215,6 @@ const PostCardFooter = ({
                     setCommentOpen(false)
                 }
             />
-
         </>
     );
 };
