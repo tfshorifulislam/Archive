@@ -211,9 +211,7 @@ const PostCardFooter = ({
             <CommentModal
                 postId={postId}
                 open={commentOpen}
-                onClose={() =>
-                    setCommentOpen(false)
-                }
+                onClose={() => setCommentOpen(false) }
             />
         </>
     );

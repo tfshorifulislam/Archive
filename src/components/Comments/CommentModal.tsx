@@ -1,10 +1,19 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { X, Send, Loader2, MessageCircle } from "lucide-react";
+import {
+    X,
+    Send,
+    Loader2,
+    MessageCircle,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
-import { getComments, Comment } from "@/services/getComments";
+
+import {
+    getComments,
+    Comment,
+} from "@/services/getComments";
 import { createComment } from "@/services/createComment";
 import CommentItem from "./CommentItem";
 
@@ -14,21 +23,26 @@ interface CommentModalProps {
     onClose: () => void;
 }
 
-const MAX_VISUAL_DEPTH = 2;
-
-const CommentModal = ({ postId, open, onClose }: CommentModalProps) => {
+const CommentModal = ({
+    postId,
+    open,
+    onClose,
+}: CommentModalProps) => {
     const { data: session } = useSession();
     const router = useRouter();
+
     const userId = session?.user?.id;
 
     const [comments, setComments] = useState<Comment[]>([]);
     const [commentText, setCommentText] = useState("");
     const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
-    const [replyTo, setReplyTo] = useState<{ id: string; userName: string } | null>(null);
+    const [replyTo, setReplyTo] = useState<{
+        id: string;
+        userName: string;
+    } | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    // Load comments when modal opens
     useEffect(() => {
         if (!open || !postId) return;
 
@@ -42,11 +56,18 @@ const CommentModal = ({ postId, open, onClose }: CommentModalProps) => {
                 if (data.success) {
                     setComments(data.comments ?? []);
                 } else {
-                    setError("Failed to load comments");
+                    setError(
+                        data.message ?? "Failed to load comments"
+                    );
                 }
             } catch (error) {
                 console.error("Load comments error:", error);
-                setError(error instanceof Error ? error.message : "Failed to load comments");
+
+                setError(
+                    error instanceof Error
+                        ? error.message
+                        : "Failed to load comments"
+                );
             } finally {
                 setLoading(false);
             }
@@ -55,35 +76,41 @@ const CommentModal = ({ postId, open, onClose }: CommentModalProps) => {
         loadComments();
     }, [open, postId]);
 
-    // Close modal
     const handleClose = () => {
         if (submitting) return;
 
         setCommentText("");
         setReplyTo(null);
         setError(null);
+
         onClose();
     };
 
-    // Handle reply
-    const handleReply = (commentId: string, userName: string) => {
+    const handleReply = (
+        commentId: string,
+        userName: string
+    ) => {
         if (!userId) {
             router.push("/auth/login");
             return;
         }
 
-        setReplyTo({ id: commentId, userName });
+        setReplyTo({
+            id: commentId,
+            userName,
+        });
+
         setCommentText(`@${userName} `);
     };
 
-    // Cancel reply
     const handleCancelReply = () => {
         setReplyTo(null);
         setCommentText("");
     };
 
-    // Submit comment or reply
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (
+        event: FormEvent<HTMLFormElement>
+    ) => {
         event.preventDefault();
 
         if (submitting) return;
@@ -109,7 +136,9 @@ const CommentModal = ({ postId, open, onClose }: CommentModalProps) => {
             });
 
             if (!data.success) {
-                setError(data.message ?? "Failed to create comment");
+                setError(
+                    data.message ?? "Failed to create comment"
+                );
                 return;
             }
 
@@ -118,17 +147,31 @@ const CommentModal = ({ postId, open, onClose }: CommentModalProps) => {
                 replies: [],
             };
 
-            if (!replyTo) {
-                setComments((prev) => [...prev, newComment]);
+            if (replyTo) {
+                setComments((prev) =>
+                    addReplyToComment(
+                        prev,
+                        replyTo.id,
+                        newComment
+                    )
+                );
             } else {
-                setComments((prev) => addReplyToComment(prev, replyTo.id, newComment));
+                setComments((prev) => [
+                    ...prev,
+                    newComment,
+                ]);
             }
 
             setCommentText("");
             setReplyTo(null);
         } catch (error) {
             console.error("Create comment error:", error);
-            setError(error instanceof Error ? error.message : "Failed to create comment");
+
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to create comment"
+            );
         } finally {
             setSubmitting(false);
         }
@@ -138,63 +181,87 @@ const CommentModal = ({ postId, open, onClose }: CommentModalProps) => {
 
     return (
         <div className="fixed inset-0 z-50">
-            {/* Backdrop */}
-            <button type="button" aria-label="Close comments" onClick={handleClose} className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+            <button
+                type="button"
+                aria-label="Close comments"
+                onClick={handleClose}
+                className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"
+            />
 
-            {/* Modal */}
             <div className="absolute inset-x-0 bottom-0 mx-auto flex h-[85vh] w-full max-w-2xl min-w-0 flex-col overflow-hidden rounded-t-3xl bg-background shadow-2xl sm:bottom-1/2 sm:translate-y-1/2 sm:rounded-3xl">
-                {/* Header */}
                 <div className="flex shrink-0 items-center justify-between border-b px-4 py-4 sm:px-5">
                     <div className="flex items-center gap-2">
                         <MessageCircle className="h-5 w-5" />
-                        <h2 className="text-base font-semibold">Comments</h2>
+
+                        <h2 className="text-base font-semibold">
+                            Comments
+                        </h2>
 
                         {comments.length > 0 && (
-                            <span className="text-sm text-muted-foreground">{comments.length}</span>
+                            <span className="text-sm text-muted-foreground">
+                                {comments.length}
+                            </span>
                         )}
                     </div>
 
-                    <button type="button" onClick={handleClose} className="flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-muted">
+                    <button
+                        type="button"
+                        onClick={handleClose}
+                        className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"
+                    >
                         <X className="h-5 w-5" />
                     </button>
                 </div>
 
-                {/* Comments */}
                 <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-5 sm:px-5">
-                    {/* Loading */}
-                    {loading && (
+                    {loading && comments.length === 0 && (
                         <div className="flex h-full items-center justify-center">
                             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                         </div>
                     )}
 
-                    {/* Error */}
                     {!loading && error && (
                         <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
-                            <p className="max-w-sm break-words text-sm text-destructive">{error}</p>
+                            <p className="max-w-sm break-words text-sm text-destructive">
+                                {error}
+                            </p>
 
-                            <button type="button" onClick={() => window.location.reload()} className="rounded-lg border px-4 py-2 text-sm transition-colors hover:bg-muted">
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    window.location.reload()
+                                }
+                                className="rounded-lg border px-4 py-2 text-sm hover:bg-muted"
+                            >
                                 Try again
                             </button>
                         </div>
                     )}
 
-                    {/* Empty */}
-                    {!loading && !error && comments.length === 0 && (
-                        <div className="flex h-full flex-col items-center justify-center text-center">
-                            <MessageCircle className="mb-3 h-10 w-10 text-muted-foreground" />
+                    {!loading &&
+                        !error &&
+                        comments.length === 0 && (
+                            <div className="flex h-full flex-col items-center justify-center text-center">
+                                <MessageCircle className="mb-3 h-10 w-10 text-muted-foreground" />
 
-                            <p className="font-medium">No comments yet</p>
+                                <p className="font-medium">
+                                    No comments yet
+                                </p>
 
-                            <p className="mt-1 text-sm text-muted-foreground">
-                                Be the first to comment.
-                            </p>
-                        </div>
-                    )}
+                                <p className="mt-1 text-sm text-muted-foreground">
+                                    Be the first to comment.
+                                </p>
+                            </div>
+                        )}
 
-                    {/* Comment List */}
-                    {!loading && !error && comments.length > 0 && (
+                    {!error && comments.length > 0 && (
                         <div className="w-full min-w-0 space-y-6">
+                            {loading && (
+                                <div className="flex justify-center">
+                                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                                </div>
+                            )}
+
                             {comments.map((comment) => (
                                 <CommentItem
                                     key={comment.id}
@@ -207,7 +274,6 @@ const CommentModal = ({ postId, open, onClose }: CommentModalProps) => {
                     )}
                 </div>
 
-                {/* Reply Indicator */}
                 {replyTo && (
                     <div className="flex shrink-0 items-center justify-between border-t bg-muted/40 px-4 py-2 sm:px-5">
                         <p className="min-w-0 truncate text-xs text-muted-foreground">
@@ -217,16 +283,21 @@ const CommentModal = ({ postId, open, onClose }: CommentModalProps) => {
                             </span>
                         </p>
 
-                        <button type="button" onClick={handleCancelReply} className="ml-3 shrink-0 text-xs font-medium text-muted-foreground hover:text-foreground">
+                        <button
+                            type="button"
+                            onClick={handleCancelReply}
+                            className="ml-3 shrink-0 text-xs font-medium text-muted-foreground hover:text-foreground"
+                        >
                             Cancel
                         </button>
                     </div>
                 )}
 
-                {/* Input */}
-                <form onSubmit={handleSubmit} className="shrink-0 border-t bg-background p-3 sm:p-4">
+                <form
+                    onSubmit={handleSubmit}
+                    className="shrink-0 border-t bg-background p-3 sm:p-4"
+                >
                     <div className="flex min-w-0 items-end gap-2 sm:gap-3">
-                        {/* Avatar */}
                         <div className="hidden shrink-0 sm:block">
                             {session?.user?.image ? (
                                 <img
@@ -236,27 +307,38 @@ const CommentModal = ({ postId, open, onClose }: CommentModalProps) => {
                                 />
                             ) : (
                                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-sm font-semibold">
-                                    {session?.user?.name?.charAt(0).toUpperCase() || "U"}
+                                    {session?.user?.name
+                                        ?.charAt(0)
+                                        .toUpperCase() || "U"}
                                 </div>
                             )}
                         </div>
 
-                        {/* Input */}
                         <div className="flex min-h-11 min-w-0 flex-1 items-center rounded-2xl border bg-muted/30 px-4">
                             <input
                                 type="text"
                                 value={commentText}
-                                onChange={(event) => setCommentText(event.target.value)}
-                                placeholder={replyTo ? `Reply to @${replyTo.userName}...` : "Add a comment..."}
+                                onChange={(event) =>
+                                    setCommentText(
+                                        event.target.value
+                                    )
+                                }
+                                placeholder={
+                                    replyTo
+                                        ? `Reply to @${replyTo.userName}...`
+                                        : "Add a comment..."
+                                }
                                 disabled={submitting}
                                 className="w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                             />
                         </div>
 
-                        {/* Send */}
                         <button
                             type="submit"
-                            disabled={submitting || !commentText.trim()}
+                            disabled={
+                                submitting ||
+                                !commentText.trim()
+                            }
                             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {submitting ? (
@@ -272,20 +354,30 @@ const CommentModal = ({ postId, open, onClose }: CommentModalProps) => {
     );
 };
 
-// Add reply recursively without changing data structure
-const addReplyToComment = (comments: Comment[], parentId: string, newReply: Comment): Comment[] => {
+const addReplyToComment = (
+    comments: Comment[],
+    parentId: string,
+    newReply: Comment
+): Comment[] => {
     return comments.map((comment) => {
         if (comment.id === parentId) {
             return {
                 ...comment,
-                replies: [...(comment.replies ?? []), newReply],
+                replies: [
+                    ...(comment.replies ?? []),
+                    newReply,
+                ],
             };
         }
 
-        if (comment.replies && comment.replies.length > 0) {
+        if (comment.replies?.length) {
             return {
                 ...comment,
-                replies: addReplyToComment(comment.replies, parentId, newReply),
+                replies: addReplyToComment(
+                    comment.replies,
+                    parentId,
+                    newReply
+                ),
             };
         }
 
