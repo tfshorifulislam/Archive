@@ -1,31 +1,18 @@
-const baseUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL;
+const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export const checkLikePost = async (
     postId: string,
     userId?: string
 ) => {
     if (!baseUrl) {
-        throw new Error(
-            "Backend URL is not configured"
-        );
+        throw new Error("Backend URL is not configured");
     }
 
-    const url = new URL(
-        `${baseUrl}/api/toggle-like/check/${postId}`
-    );
-
-    if (userId) {
-        url.searchParams.set(
-            "userId",
-            userId
-        );
-    }
+    const url = `${baseUrl}/api/toggle-like/check/${postId}`;
 
     const response = await fetch(
-        url.toString(),
+        userId ? `${url}?userId=${userId}` : url,
         {
-            method: "GET",
             credentials: "include",
             cache: "no-store",
         }

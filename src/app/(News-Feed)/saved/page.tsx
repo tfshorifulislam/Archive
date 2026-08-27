@@ -72,7 +72,19 @@ export default function SavedPage() {
         isPending,
     ]);
 
-    
+    if (isPending) {
+        return (
+            <Loading />
+        );
+    }
+
+
+    if (loading) {
+        return (
+            <Loading />
+        );
+    }
+
     if (!session?.user?.id) {
         return (
             <main className="mx-auto min-h-screen w-full p-6 ">
@@ -83,13 +95,6 @@ export default function SavedPage() {
         );
     }
 
-    if (loading) {
-        return (
-            <main className="mx-auto min-h-screen w-full p-6">
-                Loading saved posts...
-            </main>
-        );
-    }
 
     if (error) {
         return (
