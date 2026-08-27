@@ -16,7 +16,6 @@ export default async function ProfilePage({ params }: ProfileUser) {
     return (
         <main className="mx-auto min-h-screen w-full max-w-2xl">
             <ProfileHeader
-                isOwnProfile={false}
                 user={user}
             />
 

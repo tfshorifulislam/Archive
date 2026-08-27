@@ -20,7 +20,6 @@ export type UserProfileResponse = {
 
 export interface ProfileHeaderProps {
     user: ProfileUser;
-    isOwnProfile: boolean;
 }
 
 export interface ProfileTabsProps {

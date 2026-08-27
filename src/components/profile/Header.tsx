@@ -1,22 +1,33 @@
+"use client";
+
 import Image from "next/image";
 import { Ellipsis } from "lucide-react";
+
 import { ProfileHeaderProps } from "../../../types/userProfileTypes";
 import { Button } from "../ui/button";
 import { EditProfileDialog } from "./EditProfile";
+import { useSession } from "@/lib/auth-client";
 
 const ProfileHeader = ({
     user,
-    isOwnProfile,
 }: ProfileHeaderProps) => {
+    const { data: session } = useSession();
+
+    const isOwnProfile =
+        session?.user?.id === user.id;
+
     return (
-        <div className="flex w-full flex-col gap-5 sm:gap-6 lg:flex-row lg:items-center lg:justify-between mt-10">
+        <div className="mt-10 flex w-full flex-col gap-5 sm:gap-6 lg:flex-row lg:items-center lg:justify-between">
 
             {/* Profile Info */}
             <div className="flex min-w-0 items-center gap-4 sm:gap-5">
                 <Image
                     width={100}
                     height={100}
-                    src={user.image || "/placeholder.jpg"}
+                    src={
+                        user.image ||
+                        "/placeholder.jpg"
+                    }
                     alt={user.userName}
                     className="size-20 shrink-0 rounded-full object-cover sm:size-24"
                 />
@@ -34,13 +45,15 @@ const ProfileHeader = ({
 
             {/* Actions */}
             <div className="flex items-center gap-3 self-start sm:gap-4 lg:self-auto">
-                <div>
-                    {isOwnProfile ?
-                        <EditProfileDialog
-                            user={user} />
-                        :
-                        <Button>Follow</Button>}
-                </div>
+                {isOwnProfile ? (
+                    <EditProfileDialog
+                        user={user}
+                    />
+                ) : (
+                    <Button>
+                        Follow
+                    </Button>
+                )}
 
                 <Button
                     type="button"
