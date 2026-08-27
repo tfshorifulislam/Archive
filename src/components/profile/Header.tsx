@@ -1,21 +1,14 @@
-"use client";
-
 import Image from "next/image";
 import { Ellipsis } from "lucide-react";
 
 import { ProfileHeaderProps } from "../../../types/userProfileTypes";
 import { Button } from "../ui/button";
 import { EditProfileDialog } from "./EditProfile";
-import { useSession } from "@/lib/auth-client";
 
 const ProfileHeader = ({
     user,
+    isOwnProfile,
 }: ProfileHeaderProps) => {
-    const { data: session } = useSession();
-
-    const isOwnProfile =
-        session?.user?.id === user.id;
-
     return (
         <div className="mt-10 flex w-full flex-col gap-5 sm:gap-6 lg:flex-row lg:items-center lg:justify-between">
 
@@ -46,9 +39,7 @@ const ProfileHeader = ({
             {/* Actions */}
             <div className="flex items-center gap-3 self-start sm:gap-4 lg:self-auto">
                 {isOwnProfile ? (
-                    <EditProfileDialog
-                        user={user}
-                    />
+                    <EditProfileDialog user={user} />
                 ) : (
                     <Button>
                         Follow

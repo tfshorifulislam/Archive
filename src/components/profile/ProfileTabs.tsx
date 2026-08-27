@@ -37,16 +37,7 @@ const ProfileTabs = ({
         >
           About
         </TabsTrigger>
-
-        {/* SAVED */}
-        {isOwnProfile && (
-          <TabsTrigger
-            value="saved"
-            className="rounded-none border-b-2 border-transparent px-4 pb-3 pt-2 shadow-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-          >
-            Saved
-          </TabsTrigger>
-        )}
+       
       </TabsList>
 
       {/* HOME CONTENT */}
